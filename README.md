@@ -10,7 +10,7 @@ If required for testing: PGD Attack samples is at:  /l/users/raza.imam/attack_im
 
 Also, for loading the fine-tuned ViT, please intall following requirements:
 
-pip install torch==1.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html\\
+pip install torch==1.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 
 pip install torchvision==0.11.3+cu102 -f https://download.pytorch.org/whl/torch_stable.html
 
