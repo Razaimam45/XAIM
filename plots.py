@@ -45,7 +45,7 @@ def kde_plot(log_saliency_normal, log_saliency_adv):
 #     plt.tight_layout()
 #     plt.show()
     
-def hist_plot(mean_attns_cln, mean_attns_adv, N_images):
+def hist_plot(mean_attns_cln, mean_attns_adv, N_images, no_show = False):
     fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(6, 6))
     N = N_images
     axes[0, 0].imshow(mean_attns_cln, cmap='inferno')
@@ -64,7 +64,8 @@ def hist_plot(mean_attns_cln, mean_attns_adv, N_images):
     axes[1, 1].set_ylabel('Frequency')
 
     plt.tight_layout()
-    plt.show()
+    if not no_show:
+        plt.show()
     
 def plot_statistics(mean_attns_cln, mean_attns_adv, N_images,\
                         attentions_clean=None, attentions_adv=None, hist=True, kde=True, pca=True):
@@ -115,4 +116,4 @@ def create_pca_plot(saliencies_normal, saliencies_adv):
     ax1.legend()
 
     plt.tight_layout()
-    plt.show()
+    # plt.show()

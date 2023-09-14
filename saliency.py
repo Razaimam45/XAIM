@@ -11,27 +11,27 @@ from captum.attr import Saliency
 import random
 from plots import *
 import sys
-sys.path.insert(1, '/home/raza.imam/Documents/HC701B/Project/pytorch-grad-cam')
-from pytorch_grad_cam.grad_cam import GradCAM
-from pytorch_grad_cam.hirescam import HiResCAM
-from pytorch_grad_cam.grad_cam_elementwise import GradCAMElementWise
-from pytorch_grad_cam.ablation_layer import AblationLayer, AblationLayerVit, AblationLayerFasterRCNN
-from pytorch_grad_cam.ablation_cam import AblationCAM
-from pytorch_grad_cam.xgrad_cam import XGradCAM
-from pytorch_grad_cam.grad_cam_plusplus import GradCAMPlusPlus
-from pytorch_grad_cam.score_cam import ScoreCAM
-from pytorch_grad_cam.layer_cam import LayerCAM
-from pytorch_grad_cam.eigen_cam import EigenCAM
-from pytorch_grad_cam.eigen_grad_cam import EigenGradCAM
-from pytorch_grad_cam.random_cam import RandomCAM
-from pytorch_grad_cam.fullgrad_cam import FullGrad
-from pytorch_grad_cam.guided_backprop import GuidedBackpropReLUModel
-from pytorch_grad_cam.activations_and_gradients import ActivationsAndGradients
-from pytorch_grad_cam.feature_factorization.deep_feature_factorization import DeepFeatureFactorization, run_dff_on_image
-import pytorch_grad_cam.utils.model_targets
-import pytorch_grad_cam.utils.reshape_transforms
-import pytorch_grad_cam.metrics.cam_mult_image
-import pytorch_grad_cam.metrics.road
+# sys.path.insert(1, '/home/raza.imam/Documents/HC701B/Project/pytorch-grad-cam')
+# from pytorch_grad_cam.grad_cam import GradCAM
+# from pytorch_grad_cam.hirescam import HiResCAM
+# from pytorch_grad_cam.grad_cam_elementwise import GradCAMElementWise
+# from pytorch_grad_cam.ablation_layer import AblationLayer, AblationLayerVit, AblationLayerFasterRCNN
+# from pytorch_grad_cam.ablation_cam import AblationCAM
+# from pytorch_grad_cam.xgrad_cam import XGradCAM
+# from pytorch_grad_cam.grad_cam_plusplus import GradCAMPlusPlus
+# from pytorch_grad_cam.score_cam import ScoreCAM
+# from pytorch_grad_cam.layer_cam import LayerCAM
+# from pytorch_grad_cam.eigen_cam import EigenCAM
+# from pytorch_grad_cam.eigen_grad_cam import EigenGradCAM
+# from pytorch_grad_cam.random_cam import RandomCAM
+# from pytorch_grad_cam.fullgrad_cam import FullGrad
+# from pytorch_grad_cam.guided_backprop import GuidedBackpropReLUModel
+# from pytorch_grad_cam.activations_and_gradients import ActivationsAndGradients
+# from pytorch_grad_cam.feature_factorization.deep_feature_factorization import DeepFeatureFactorization, run_dff_on_image
+# import pytorch_grad_cam.utils.model_targets
+# import pytorch_grad_cam.utils.reshape_transforms
+# import pytorch_grad_cam.metrics.cam_mult_image
+# import pytorch_grad_cam.metrics.road
 
 
 def reshape_transform(tensor, height=14, width=14):
@@ -260,26 +260,39 @@ def get_blk_attn(input_img, blk, model, patch_size=16): #REVIEW:function to get 
 
     return mean_attention #REVIEW:Return mean of 12 head attentions
 
-    
-def mean_attns_N_images(image_folder, N_images, block, model, N_random=True, device="cuda", N_heads=12, attack_type="PGD", eps=0.05):
-    # image_folder = '/home/raza.imam/Documents/HC701B/Project/data/TB_data/training/Normal'
 
-    transform = transforms.Compose(
-    [
-        transforms.Grayscale(num_output_channels=3),
-        transforms.RandomRotation((90,90)),
-        transforms.CenterCrop(400),
-        transforms.Resize((224, 224)),
-        # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
-        transforms.ToTensor(),
-    ]
-)
+ATTACK_LIST = ["PGD", "FGSM"]
+    
+def mean_attns_N_images(
+        image_folder, 
+        n_images, 
+        block, 
+        model, 
+        n_random=True, 
+        device="cuda", 
+        N_heads=12, 
+        attack_type="PGD", 
+        eps=0.05, 
+        transform = None
+        ):
+
+    if transform is None:
+        transform = transforms.Compose(
+            [
+                transforms.Grayscale(num_output_channels=3),
+                transforms.RandomRotation((90,90)),
+                transforms.CenterCrop(400),
+                transforms.Resize((224, 224)),
+                # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+                transforms.ToTensor(),
+                ]
+            )
 
     image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")]    
-    if N_random==False:
-        image_files = image_files[:N_images]  #first N images
+    if n_random==False:
+        image_files = image_files[:n_images]  #first N images
     else:
-        image_files = random.sample(image_files, N_images) #random N images
+        image_files = random.sample(image_files, n_images) #random N images
 
     #REVIEW:creating list of N clean images
     images = []
@@ -290,94 +303,137 @@ def mean_attns_N_images(image_folder, N_images, block, model, N_random=True, dev
         # image = image.unsqueeze(0)        
         images.append(image)
     images_tensor = torch.stack(images)
-    print(images_tensor.shape)
-    
-    #REVIEW:Calculating Attention for each clean image
-    attentions_clean = []
-    for input_img in images_tensor:
-        input_img = input_img.unsqueeze(0)
-        attn = get_blk_attn(input_img.to(device), block, model)
-        attentions_clean.append(attn)
-    mean_attns_cln = np.mean(attentions_clean, axis=0)
-    print("mean_attns_cln.shape:", mean_attns_cln.shape)
-    
-    #REVIEW:Creating list of N adv images
-    if attack_type=="PGD":
-        pgd = PGD(model, lower_bound=0, upper_bound=1)
-        adv_images = []
-        for input_img in images_tensor:
-            input_img = input_img.unsqueeze(0).float()
-            perturbed_image = pgd.perturb(input_img.to(device), radius=0.13, step_size=eps, step_num=7, target=0) #step_size = epsilon in PGD case
-            adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
-            adv_images.append(adv_img.squeeze(0))
-        adv_images_tensor = torch.stack(adv_images)
-    elif attack_type=="FGSM":
-        fgsm = FGSM(model, lower_bound=0, upper_bound=1)
-        adv_images = []
-        for input_img in images_tensor:
-            input_img = input_img.unsqueeze(0).float()
-            perturbed_image = fgsm.perturb(input_img.cuda(), epsilon=eps, target=0) 
-            adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
-            adv_images.append(adv_img.squeeze(0))
-        adv_images_tensor = torch.stack(adv_images)
 
-    #REVIEW:Calculating Attention for each adv image
-    attentions_adv = []
-    for adv_img in adv_images_tensor:
+    mean_attns = {}
+    all_attns = {}
+    mean_attn_diff = {}
+
+    attentions_clean, mean_attns_cln = apply_attn_on_images(model=model, block=block, images = images_tensor, device=device)
+    mean_attns['clean'] = mean_attns_cln
+    all_attns['clean'] = attentions_clean
+
+
+    if isinstance(attack_type, str):
+        # if attack_type=="all":
+        #     attack_type = ATTACK_LIST # ["PGD", "FGSM"]
+        attack_type = [attack_type]
+
+    if "PGD" in attack_type:         
+        adv_images_tensor_pdg = apply_pdg(
+            model = model,
+            images = images_tensor,
+            device = device,
+            eps = eps,
+        )
+        attentions_adv_pdg, mean_attns_pdg = apply_attn_on_images(model=model, block=block, images = adv_images_tensor_pdg, device=device)
+        mean_attns_diff_pdg = mean_attns_pdg - mean_attns_cln
+
+        # add to dict
+        mean_attns['PGD'] = mean_attns_pdg
+        all_attns['PGD'] = attentions_adv_pdg
+        mean_attn_diff['PGD'] = mean_attns_diff_pdg
+        
+    if "FGSM" in attack_type:
+        adv_images_tensor_fgsm = apply_fgsm(
+            model = model,
+            images = images_tensor,
+            device = device,
+            eps = eps,
+        )
+        attentions_adv_fgsm, mean_attns_fgsm = apply_attn_on_images(model=model, block=block, images = adv_images_tensor_fgsm, device=device)
+        # Calculating difference of mean_attns_cln and mean_attns_adv
+        mean_attns_diff_fgsm = mean_attns_fgsm - mean_attns_cln
+
+        # add to dict
+        mean_attns['FGSM'] = mean_attns_fgsm
+        all_attns['FGSM'] = attentions_adv_fgsm
+        mean_attn_diff['FGSM'] = mean_attns_diff_fgsm
+
+
+    # return mean_attns_cln, mean_attns, mean_attn_diff, attentions_clean, all_attns
+    return all_attns, mean_attns, mean_attn_diff
+
+
+def apply_pdg(model, images, device="cuda", eps=0.05, radius = 0.13, step_num=7, target=0, pgd = None):
+    if pgd is None:
+        pgd = PGD(model, lower_bound=0, upper_bound=1)
+    adv_imgs = []
+    for input_img in images:
+        input_img = input_img.unsqueeze(0).float()
+        perturbed_image = pgd.perturb(input_img.to(device), radius=radius, step_size=eps, step_num=step_num, target=target) #step_size = epsilon in PGD case
+        adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
+        adv_imgs.append(adv_img.squeeze(0))
+    adv_imgs = torch.stack(adv_imgs)
+    return adv_imgs
+
+def apply_fgsm(model, images, device="cuda", eps=0.05, target=0):
+    fgsm = FGSM(model, lower_bound=0, upper_bound=1)
+    adv_imgs = []
+    for input_img in images:
+        input_img = input_img.unsqueeze(0).float()
+        perturbed_image = fgsm.perturb(input_img.to(device), epsilon=eps, target=0) 
+        adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
+        adv_imgs.append(adv_img.squeeze(0))
+    adv_imgs = torch.stack(adv_imgs)
+    return adv_imgs
+
+
+def apply_attn_on_images(model, block, images, device="cuda"):
+    attns = []
+    for adv_img in images:
         adv_img = adv_img.unsqueeze(0)
         attn = get_blk_attn(adv_img.to(device), block, model)
-        attentions_adv.append(attn)
-    mean_attns_adv = np.mean(attentions_adv, axis=0)
-    print("mean_attns_adv.shape:", mean_attns_adv.shape)    
-
-    # Calculating difference of mean_attns_cln and mean_attns_adv
-    mean_attns_diff = mean_attns_adv - mean_attns_cln
-    print("mean_attns_diff.shape:", mean_attns_diff.shape)    
-
-    return mean_attns_cln, mean_attns_adv, mean_attns_diff, attentions_clean, attentions_adv
+        attns.append(attn)
+    mean_attn = np.mean(attns, axis=0)
+    return attns, mean_attn
 
 
-def test_img_attn(image_folder, block, model, plot=False, rand=True, random_state=None, device="cuda", attack_type="PGD", eps=0.05):
-    image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")]    
-    if rand==False:
-        f_0 = image_files[:1][0]  #first N images
-    else:
-        random.seed(random_state)
-        f_0 = random.sample(image_files, 1)[0] #random N images
+def test_img_attn(image_folder, block, img_name, model, plot=False, rand=True, random_state=None, device="cuda", attack_type=['all'], eps=0.05, transform = None):
+    if transform is None:
+        transform = transforms.Compose(
+        [
+            transforms.Grayscale(num_output_channels=3),
+            transforms.RandomRotation((90,90)),
+            transforms.CenterCrop(400),
+            transforms.Resize((224, 224)),
+            # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+            transforms.ToTensor(),
+        ])
 
-    transform = transforms.Compose(
-    [
-        transforms.Grayscale(num_output_channels=3),
-        transforms.RandomRotation((90,90)),
-        transforms.CenterCrop(400),
-        transforms.Resize((224, 224)),
-        # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
-        transforms.ToTensor(),
-    ])
+    attns = {}
+    attn_diff = {}
+
     # Getting block attention for clean version
-    image_path = os.path.join(image_folder, f_0)
+    image_path = os.path.join(image_folder, img_name)
     img = transform(Image.open(image_path))
     img = img.unsqueeze(0)
     attn_cln = get_blk_attn(img.to(device), block, model)
+    attns['clean'] = attn_cln
 
     # Generating adv sample and getting block attention
-    if attack_type=="PGD":
-        pgd = PGD(model, lower_bound=0, upper_bound=1)
-        img = img.float()
-        perturbed_image = pgd.perturb(img.to(device), radius=0.13, step_size=eps, step_num=7, target=0) 
-        adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
-        attn_adv = get_blk_attn(adv_img.to(device), block, model)
-    elif attack_type=="FGSM":
-        fgsm = FGSM(model, lower_bound=0, upper_bound=1)
-        img = img.float()
-        perturbed_image = fgsm.perturb(img.cuda(), epsilon=eps, target=0)
-        adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
-        attn_adv = get_blk_attn(adv_img.to(device), block, model)
-    
-    att_diff = attn_adv - attn_cln
+    if isinstance(attack_type, str):
+        attack_type = [attack_type]
+
+    img = img.float()
+    if "PGD" in attack_type:
+        adv_img_pgd = apply_pdg(model=model, images = img, device=device, eps=eps)
+        attn_adv_pgd = get_blk_attn(adv_img_pgd.to(device), block, model)
+        attn_diff_pgd = attn_adv_pgd - attn_cln
+        attns['PGD'] = attn_adv_pgd
+        attn_diff['PGD'] = attn_diff_pgd
+    if "FGSM" in attack_type:
+        # img = img.float()
+        adv_img_fgsm = apply_fgsm(model=model, images = img, device=device, eps=eps)
+        attn_adv_fgsm = get_blk_attn(adv_img_fgsm.to(device), block, model)
+        att_diff_fgsm = attn_adv_fgsm - attn_cln
+        attns['FGSM'] = attn_adv_fgsm
+        attn_diff['FGSM'] = att_diff_fgsm    
     
     if plot==True:
-        plot_statistics(attn_cln, attn_adv, N_images=1, hist=True, kde=False, pca=False)
+        os.makedirs(os.path.join("plots", 'test_stats'), exist_ok=True)
+        for attack_name in attack_type:
+            plot_statistics(attn_cln, attns[attack_name], N_images=1, hist=True, kde=False, pca=False)
+            plt.savefig(os.path.join("plots", 'test_stats', f"attns_{attack_name}_block_{block}_images_{1}.png"))            
     
-    return img, attn_cln, attn_adv, att_diff
+    return img, attns, attn_diff
 
