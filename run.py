@@ -196,7 +196,7 @@ if __name__ == "__main__":
         eps = args.eps,
         plot = False,
         rand = False,
-        random_state = None,
+        random_state = args.random_state,
     )
 
     num_test_images = len(test_attns)
