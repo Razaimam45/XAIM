@@ -356,7 +356,7 @@ def mean_attns_N_images(
     return all_attns, mean_attns, mean_attn_diff
 
 
-def apply_pdg(model, images, device="cuda", eps=0.05, radius = 0.13, step_num=7, target=0, pgd = None):
+def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=20, target=0, pgd = None):
     if pgd is None:
         pgd = PGD(model, lower_bound=0, upper_bound=1)
     adv_imgs = []
@@ -390,7 +390,7 @@ def apply_attn_on_images(model, block, images, device="cuda"):
     return attns, mean_attn
 
 
-def test_img_attn(image_folder, block, img_name, model, plot=False, rand=True, random_state=None, device="cuda", attack_type=['all'], eps=0.05, transform = None):
+def test_img_attn(image_folder, block, img_name, model, plot=False, device="cuda", attack_type=['all'], eps=0.05, transform = None):
     if transform is None:
         transform = transforms.Compose(
         [
