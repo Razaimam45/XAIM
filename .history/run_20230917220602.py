@@ -110,7 +110,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all')
 
     # mean_attn_adv_flat = mean_attn_adv['PGD'].flatten()
 
-    # mean_attns_adv_flat = mean_attn_adv.flatten()
+    mean_attns_adv_flat = mean_attn_adv.flatten()
 
     if isinstance(method, str):
         method = [method]
@@ -150,7 +150,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all')
         cos_pred = "Clean"
         for key in attacks_used:
             cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attn_adv[key].flatten()])
-            if cosine_distance_to_normal < cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
+            if cosine_distance_to_normal < cosine_distance_to_adversarial:
                 cos_pred = "Adversarial"
         # cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attns_adv_flat])
         # cos_pred = "Clean" if cosine_distance_to_normal > cosine_distance_to_adversarial else "Adversarial"

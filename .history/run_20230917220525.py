@@ -110,7 +110,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all')
 
     # mean_attn_adv_flat = mean_attn_adv['PGD'].flatten()
 
-    # mean_attns_adv_flat = mean_attn_adv.flatten()
+    mean_attns_adv_flat = mean_attn_adv.flatten()
 
     if isinstance(method, str):
         method = [method]
@@ -127,7 +127,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all')
 
         for key in attacks_used:
             sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
-            if sum_distance_to_normal > sum_distance_to_adversarial:
+            if sum_distance_to_normal < sum_distance_to_adversarial:
                 sum_pred = "Adversarial"
             # sum_pred = "Clean" if sum_distance_to_normal < sum_distance_to_adversarial else "Adversarial"
 
@@ -139,7 +139,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all')
         euc_pred = "Clean"
         for key in attacks_used:
             euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attn_adv[key].flatten())
-            if euc_distance_to_normal > euc_distance_to_adversarial:
+            if euc_distance_to_normal < euc_distance_to_adversarial:
                 euc_pred = "Adversarial"
         # euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attns_adv_flat)
         # euc_pred = "Clean" if euc_distance_to_normal < euc_distance_to_adversarial else "Adversarial"
@@ -150,7 +150,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all')
         cos_pred = "Clean"
         for key in attacks_used:
             cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attn_adv[key].flatten()])
-            if cosine_distance_to_normal < cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
+            if cosine_distance_to_normal < cosine_distance_to_adversarial:
                 cos_pred = "Adversarial"
         # cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attns_adv_flat])
         # cos_pred = "Clean" if cosine_distance_to_normal > cosine_distance_to_adversarial else "Adversarial"

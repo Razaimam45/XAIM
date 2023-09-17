@@ -103,60 +103,60 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all')
     test_attn_flat = img_attn_map.flatten()
     mean_attns_cln_flat = mean_attn_clean.flatten()
 
-    assert isinstance(mean_attn_adv, dict), "mean_attn_adv must be a dict"
+    assert isinstance(mean_attn_adv, dict) or isinstance(mean_attn_adv, np.ndarray), "mean_attn_adv must be a dict or a numpy array"
 
-    # if isinstance(mean_attn_adv, dict):
-    attacks_used = list(mean_attn_adv.keys())
+    if isinstance(mean_attn_adv, dict):
+        attacks_used = list(mean_attn_adv.keys())
 
-    # mean_attn_adv_flat = mean_attn_adv['PGD'].flatten()
+        # mean_attn_adv_flat = mean_attn_adv['PGD'].flatten()
 
-    # mean_attns_adv_flat = mean_attn_adv.flatten()
+        mean_attns_adv_flat = mean_attn_adv.flatten()
 
-    if isinstance(method, str):
-        method = [method]
+        if isinstance(method, str):
+            method = [method]
 
-    if "all" in method:
-        method = ["sum", "euclidean", "cosine"]
+        if "all" in method:
+            method = ["sum", "euclidean", "cosine"]
 
-    preds = {}
+        preds = {}
 
-    if "sum" in method:
-        sum_distance_to_normal = np.sum((test_attn_flat - mean_attns_cln_flat))
+        if "sum" in method:
+            sum_distance_to_normal = np.sum((test_attn_flat - mean_attns_cln_flat))
 
-        sum_pred = "Clean"
+            sum_pred = "Clean"
 
-        for key in attacks_used:
-            sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
-            if sum_distance_to_normal > sum_distance_to_adversarial:
-                sum_pred = "Adversarial"
-            # sum_pred = "Clean" if sum_distance_to_normal < sum_distance_to_adversarial else "Adversarial"
+            for key in attacks_used:
+                sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
+                if sum_distance_to_normal < sum_distance_to_adversarial:
+                    sum_pred = "Adversarial"
+                # sum_pred = "Clean" if sum_distance_to_normal < sum_distance_to_adversarial else "Adversarial"
 
-        preds["sum"] = sum_pred
+            preds["sum"] = sum_pred
 
-    if "euclidean" in method:
-        euc_distance_to_normal = euclidean(test_attn_flat, mean_attns_cln_flat)
+        if "euclidean" in method:
+            euc_distance_to_normal = euclidean(test_attn_flat, mean_attns_cln_flat)
 
-        euc_pred = "Clean"
-        for key in attacks_used:
-            euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attn_adv[key].flatten())
-            if euc_distance_to_normal > euc_distance_to_adversarial:
-                euc_pred = "Adversarial"
-        # euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attns_adv_flat)
-        # euc_pred = "Clean" if euc_distance_to_normal < euc_distance_to_adversarial else "Adversarial"
-        preds["euclidean"] = euc_pred
+            euc_pred = "Clean"
+            for key in attacks_used:
+                euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attn_adv[key].flatten())
+                if euc_distance_to_normal < euc_distance_to_adversarial:
+                    euc_pred = "Adversarial"
+            # euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attns_adv_flat)
+            # euc_pred = "Clean" if euc_distance_to_normal < euc_distance_to_adversarial else "Adversarial"
+            preds["euclidean"] = euc_pred
 
-    if "cosine" in method:
-        cosine_distance_to_normal = cosine_similarity([test_attn_flat], [mean_attns_cln_flat])
-        cos_pred = "Clean"
-        for key in attacks_used:
-            cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attn_adv[key].flatten()])
-            if cosine_distance_to_normal < cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
-                cos_pred = "Adversarial"
-        # cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attns_adv_flat])
-        # cos_pred = "Clean" if cosine_distance_to_normal > cosine_distance_to_adversarial else "Adversarial"
-        preds["cosine"] = cos_pred
+        if "cosine" in method:
+            cosine_distance_to_normal = cosine_similarity([test_attn_flat], [mean_attns_cln_flat])
+            cos_pred = "Clean"
+            for key in attacks_used:
+                cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attn_adv[key].flatten()])
+                if cosine_distance_to_normal < cosine_distance_to_adversarial:
+                    cos_pred = "Adversarial"
+            # cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attns_adv_flat])
+            # cos_pred = "Clean" if cosine_distance_to_normal > cosine_distance_to_adversarial else "Adversarial"
+            preds["cosine"] = cos_pred
 
-    return preds
+        return preds
 
 
 if __name__ == "__main__":
