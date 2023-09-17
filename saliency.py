@@ -405,7 +405,7 @@ def test_img_attn(image_folder, block, img_name, model, plot=False, device="cuda
 
     attns = {}
     attn_diff = {}
-
+    print(f' Attacking images with {attack_type}')
     # Getting block attention for clean version
     image_path = os.path.join(image_folder, img_name)
     img = transform(Image.open(image_path))

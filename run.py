@@ -20,7 +20,7 @@ from saliency import mean_attns_N_images
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import euclidean
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
 
 transform = transforms.Compose(
     [
@@ -99,6 +99,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
         based on the distance between the test image's attention map 
         and the mean attention maps of clean and adversarial images.
     """
+    print(f'Testing against attacks: {attacks}')
 
     test_attn_flat = img_attn_map.flatten()
     mean_attns_cln_flat = mean_attn_clean.flatten()
@@ -123,12 +124,13 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
     if "sum" in method:
         sum_distance_to_normal = np.sum((test_attn_flat - mean_attns_cln_flat))
 
-        sum_pred = "Clean"
+        sum_pred = "Adversarial"
 
         for key in attacks:
             sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
-            if sum_distance_to_normal > sum_distance_to_adversarial:
-                sum_pred = "Adversarial"
+            # if sum_distance_to_normal > sum_distance_to_adversarial:
+            if sum_distance_to_normal < sum_distance_to_adversarial:
+                sum_pred = "Clean"
             # sum_pred = "Clean" if sum_distance_to_normal < sum_distance_to_adversarial else "Adversarial"
 
         preds["sum"] = sum_pred
@@ -136,22 +138,22 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
     if "euclidean" in method:
         euc_distance_to_normal = euclidean(test_attn_flat, mean_attns_cln_flat)
 
-        euc_pred = "Clean"
+        euc_pred = "Adversarial"
         for key in attacks:
             euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attn_adv[key].flatten())
-            if euc_distance_to_normal > euc_distance_to_adversarial:
-                euc_pred = "Adversarial"
+            if euc_distance_to_normal < euc_distance_to_adversarial:
+                euc_pred = "Clean"
         # euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attns_adv_flat)
         # euc_pred = "Clean" if euc_distance_to_normal < euc_distance_to_adversarial else "Adversarial"
         preds["euclidean"] = euc_pred
 
     if "cosine" in method:
         cosine_distance_to_normal = cosine_similarity([test_attn_flat], [mean_attns_cln_flat])
-        cos_pred = "Clean"
+        cos_pred = "Adversarial"
         for key in attacks:
             cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attn_adv[key].flatten()])
-            if cosine_distance_to_normal < cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
-                cos_pred = "Adversarial"
+            if cosine_distance_to_normal > cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
+                cos_pred = "Clean"
         # cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attns_adv_flat])
         # cos_pred = "Clean" if cosine_distance_to_normal > cosine_distance_to_adversarial else "Adversarial"
         preds["cosine"] = cos_pred
@@ -163,20 +165,20 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str, default='/home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth', help='model checkpoint path')
     parser.add_argument('--device', type=str, default='cuda', help='device')
-    parser.add_argument('--attack', type=str, default='PGD', choices=['FGSM', "PGD", "all"], help='attack type (all for all)')
+    parser.add_argument('--attack', type=str, default='PGD', choices=['FGSM', "PGD", "all"], help='attack type (all for all) to perform on test sample')
     parser.add_argument('--train_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/training", help='path to train data')
     parser.add_argument('--test_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/testing", help='path to test data')
     parser.add_argument("--num_train_imgs", type=int, default=2000, help="number of train images to use")
-    parser.add_argument("--num_test_imgs", type=int, default=350, help="number of test images to use")
+    parser.add_argument("--num_test_imgs", type=int, default=10, help="number of test images to use")
     parser.add_argument("--dataset_class", type=str, default="Tuberculosis", choices=["Tuberculosis", "Normal"], help="dataset class")
     parser.add_argument("--block", type=int, default=-1, help="ViT block to take attention from")
     parser.add_argument("--eps", type=float, default=0.003, help="epsilon for adversarial attacks")
     parser.add_argument("--force_recompute", action="store_true", help="force recompute mean images")
     parser.add_argument("--random", default=False, help="select random images for mean attn")
     parser.add_argument("--random_state", type=int, default=0, help="random state for experiments (train and test both)")
-    parser.add_argument("--test_on_attacks", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], help="attacks to test on")
+    parser.add_argument("--reference_attack", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], help="attacks to test on")
     # mean attacks
-    parser.add_argument("--mean_attacks", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], help="attacks to test on")
+    # parser.add_argument("--mean_attacks", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], help="attacks to test on")
 
     args = parser.parse_args()
 
@@ -190,15 +192,15 @@ if __name__ == "__main__":
     else:
         args.attack = [args.attack.upper()]
 
-    if args.test_on_attacks == "all":
-        args.test_on_attacks = ATTACK_LIST
+    if args.reference_attack == "all":
+        args.reference_attack = ATTACK_LIST
     else:
-        args.test_on_attacks = [args.test_on_attacks.upper()]
+        args.reference_attack = [args.reference_attack.upper()]
 
-    if args.mean_attacks == "all":
-        args.mean_attacks = ATTACK_LIST
-    else:
-        args.mean_attacks = [args.mean_attacks.upper()]
+    # if args.mean_attacks == "all":
+    #     args.mean_attacks = ATTACK_LIST
+    # else:
+    #     args.mean_attacks = [args.mean_attacks.upper()]
 
 
     model = get_model(model_path=args.model_path, device=args.device)
@@ -209,13 +211,13 @@ if __name__ == "__main__":
     else:
         # load mean/reference image if it exists
         exits = True
-        for attack_name in args.mean_attacks + ['clean']:
+        for attack_name in args.reference_attack + ['clean']:
             # mean_attns[attack_name] = mean_attns[attack_name].cpu().numpy()
             exits *= os.path.exists(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"))
 
     if exits:
         mean_attns = {}
-        for attack_name in args.mean_attacks + ['clean']:
+        for attack_name in args.reference_attack + ['clean']:
             mean_attns[attack_name] = np.load(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"))
         print(f'Loaded mean images from ./reference/mean_images/')
     else:    
@@ -225,7 +227,7 @@ if __name__ == "__main__":
             block = args.block,
             n_images = args.num_train_imgs,
             device = args.device,
-            attack_type = args.mean_attacks,
+            attack_type = args.reference_attack,
             select_random = args.random,
             eps = args.eps,
             random_state = args.random_state
@@ -233,7 +235,7 @@ if __name__ == "__main__":
     # save mean images to disk
     os.makedirs(os.path.join("./reference", "mean_images"), exist_ok=True)
     print(f'Saving mean images to ./reference/mean_images/')
-    for attack_name in args.attack + ['clean']:
+    for attack_name in args.reference_attack + ['clean']:
         # mean_attns[attack_name] = mean_attns[attack_name].cpu().numpy()
         np.save(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"), mean_attns[attack_name])
 
@@ -272,7 +274,7 @@ if __name__ == "__main__":
                 img_attn_map = attn_map[attack_name],
                 mean_attn_clean = mean_attns['clean'], 
                 mean_attn_adv=mean_attns, 
-                attacks = args.test_on_attacks,
+                attacks = args.reference_attack,
                 # attack_name = attack_name,
                 # mean_attn_adv = mean_attns['PGD'] #WHy PGD hard coded? NOt FGSM?
                 )
@@ -323,6 +325,7 @@ if __name__ == "__main__":
             print(f'--------------- {method} ---------------', file=f)
             print(f"Accuracy for {method}: {accuracy_score(gt_labels_bin, pred_bin)}", file=f)
             print(f"F1 score for {method}: {f1_score(gt_labels_bin, pred_bin)}", file=f)
+            print(f'Confusion matrix {method}: {confusion_matrix(gt_labels_bin, pred_bin)}', file=f)
             print(f'-------------------------------------------------------------------', file=f)
 
             # # print to screen
