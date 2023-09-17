@@ -174,6 +174,7 @@ if __name__ == "__main__":
     parser.add_argument("--force_recompute", action="store_true", help="force recompute mean images")
     parser.add_argument("--random", default=False, help="select random images for mean attn")
     parser.add_argument("--random_state", type=int, default=0, help="random state for experiments (train and test both)")
+    # test_on_attacks
     parser.add_argument("--test_on_attacks", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], nargs='+', help="attacks to test on")
     
 

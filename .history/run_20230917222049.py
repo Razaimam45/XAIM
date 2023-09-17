@@ -174,11 +174,11 @@ if __name__ == "__main__":
     parser.add_argument("--force_recompute", action="store_true", help="force recompute mean images")
     parser.add_argument("--random", default=False, help="select random images for mean attn")
     parser.add_argument("--random_state", type=int, default=0, help="random state for experiments (train and test both)")
-    parser.add_argument("--test_on_attacks", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], nargs='+', help="attacks to test on")
+    # test_on_attacks
+    parser.add_argument("--test_on_attacks", type=str, default=['PGD', 'FGSM'], nargs='+', help="attacks to test on")
     
 
     args = parser.parse_args()
-
     print("Arguments:")
     for p in vars(args).items():
         print("  ", p[0]+": ", p[1])
@@ -188,11 +188,6 @@ if __name__ == "__main__":
         args.attack = ATTACK_LIST # ["PGD", "FGSM"]
     else:
         args.attack = [args.attack.upper()]
-
-    if args.test_on_attacks == "all":
-        args.test_on_attacks = ATTACK_LIST
-    else:
-        args.test_on_attacks = [args.test_on_attacks.upper()]
 
     model = get_model(model_path=args.model_path, device=args.device)
     
