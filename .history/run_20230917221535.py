@@ -106,7 +106,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
     assert isinstance(mean_attn_adv, dict), "mean_attn_adv must be a dict"
 
     # if isinstance(mean_attn_adv, dict):
-    # attacks = list(mean_attn_adv.keys())
+    # attacks_used = list(mean_attn_adv.keys())
 
     # mean_attn_adv_flat = mean_attn_adv['PGD'].flatten()
 
@@ -125,7 +125,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
 
         sum_pred = "Clean"
 
-        for key in attacks:
+        for key in attacks_used:
             sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
             if sum_distance_to_normal > sum_distance_to_adversarial:
                 sum_pred = "Adversarial"
@@ -137,7 +137,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
         euc_distance_to_normal = euclidean(test_attn_flat, mean_attns_cln_flat)
 
         euc_pred = "Clean"
-        for key in attacks:
+        for key in attacks_used:
             euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attn_adv[key].flatten())
             if euc_distance_to_normal > euc_distance_to_adversarial:
                 euc_pred = "Adversarial"
@@ -148,7 +148,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
     if "cosine" in method:
         cosine_distance_to_normal = cosine_similarity([test_attn_flat], [mean_attns_cln_flat])
         cos_pred = "Clean"
-        for key in attacks:
+        for key in attacks_used:
             cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attn_adv[key].flatten()])
             if cosine_distance_to_normal < cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
                 cos_pred = "Adversarial"
