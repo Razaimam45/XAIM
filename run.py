@@ -53,10 +53,20 @@ def get_model(model_path, device):
     model.to(device)
     return model
 
-def get_images_attns(model, image_folder, n_imgs=20, block=-1, device="cuda", attack_type=['all'], eps=0.05, plot=False, random_state=None):
-    image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")]
-    random.seed(random_state)
-    image_files = random.sample(image_files, n_imgs)
+def get_images_attns(model, image_folder, n_imgs=20, block=-1, device="cuda", attack_type=['all'], eps=0.05, plot=False, n_random = False, random_state=None):
+    # image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")]
+    # random.seed(random_state)
+    # image_files = random.sample(image_files, n_imgs)
+    print(f"n_random test = {n_random}")
+    image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")]    
+    if n_random==False:
+        image_files = image_files[:n_imgs]  #first N images
+        print(f"First {len(image_files)} test files loaded")
+    else:
+        random.seed(random_state)
+        image_files = random.sample(image_files, n_imgs) #random N images
+        print(f"Random {len(image_files)} test files loaded")
+    
     all_imgs = []
     all_attns = []
     all_attn_diff = []
@@ -126,11 +136,11 @@ if __name__ == "__main__":
     parser.add_argument('--attack', type=str, default='PGD', choices=['FGSM', "PGD", "all"], help='attack type (all for all)')
     parser.add_argument('--train_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/training", help='path to train data')
     parser.add_argument('--test_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/testing", help='path to test data')
-    parser.add_argument("--num_train_imgs", type=int, default=1000, help="number of train images to use")
-    parser.add_argument("--num_test_imgs", type=int, default=100, help="number of test images to use")
+    parser.add_argument("--num_train_imgs", type=int, default=2000, help="number of train images to use")
+    parser.add_argument("--num_test_imgs", type=int, default=350, help="number of test images to use")
     parser.add_argument("--dataset_class", type=str, default="Tuberculosis", choices=["Tuberculosis", "Normal"], help="dataset class")
     parser.add_argument("--block", type=int, default=-1, help="ViT block to take attention from")
-    parser.add_argument("--eps", type=float, default=0.3, help="epsilon for adversarial attacks")
+    parser.add_argument("--eps", type=float, default=0.003, help="epsilon for adversarial attacks")
     parser.add_argument("--force_recompute", action="store_true", help="force recompute mean images")
     parser.add_argument("--random", default=False, help="select random images for mean attn")
     parser.add_argument("--random_state", type=int, default=0, help="random state for experiments (train and test both)")
@@ -194,6 +204,7 @@ if __name__ == "__main__":
         attack_type = args.attack,
         eps = args.eps,
         plot = False,
+        n_random = args.random,
         random_state = args.random_state,
     )
 
@@ -216,7 +227,7 @@ if __name__ == "__main__":
             result = classify_image(
                 img_attn_map = attn_map[attack_name],
                 mean_attn_clean = mean_attns['clean'], 
-                mean_attn_adv = mean_attns['FGSM'] #WHy PGD hard coded? NOt FGSM?
+                mean_attn_adv = mean_attns['PGD'] #WHy PGD hard coded? NOt FGSM?
                 )
             sum_preds.append(result['sum'])
             euc_preds.append(result['euclidean'])
