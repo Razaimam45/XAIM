@@ -130,7 +130,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_test_imgs", type=int, default=100, help="number of test images to use")
     parser.add_argument("--dataset_class", type=str, default="Tuberculosis", choices=["Tuberculosis", "Normal"], help="dataset class")
     parser.add_argument("--block", type=int, default=-1, help="ViT block to take attention from")
-    parser.add_argument("--eps", type=float, default=0.03, help="epsilon for adversarial attacks")
+    parser.add_argument("--eps", type=float, default=0.3, help="epsilon for adversarial attacks")
     parser.add_argument("--force_recompute", action="store_true", help="force recompute mean images")
     parser.add_argument("--random", default=False, help="select random images for mean attn")
     parser.add_argument("--random_state", type=int, default=0, help="random state for experiments (train and test both)")
@@ -216,7 +216,7 @@ if __name__ == "__main__":
             result = classify_image(
                 img_attn_map = attn_map[attack_name],
                 mean_attn_clean = mean_attns['clean'], 
-                mean_attn_adv = mean_attns['PGD'] #WHy PGD hard coded? NOt FGSM?
+                mean_attn_adv = mean_attns['FGSM'] #WHy PGD hard coded? NOt FGSM?
                 )
             sum_preds.append(result['sum'])
             euc_preds.append(result['euclidean'])
