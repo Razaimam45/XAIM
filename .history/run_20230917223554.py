@@ -209,13 +209,13 @@ if __name__ == "__main__":
     else:
         # load mean/reference image if it exists
         exits = True
-        for attack_name in args.mean_attns + ['clean']:
+        for attack_name in args.attack + ['clean']:
             # mean_attns[attack_name] = mean_attns[attack_name].cpu().numpy()
             exits *= os.path.exists(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"))
 
     if exits:
         mean_attns = {}
-        for attack_name in args.mean_attns + ['clean']:
+        for attack_name in args.attack + ['clean']:
             mean_attns[attack_name] = np.load(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"))
         print(f'Loaded mean images from ./reference/mean_images/')
     else:    
@@ -225,7 +225,7 @@ if __name__ == "__main__":
             block = args.block,
             n_images = args.num_train_imgs,
             device = args.device,
-            attack_type = args.mean_attns,
+            attack_type = args.attack,
             select_random = args.random,
             eps = args.eps,
             random_state = args.random_state
