@@ -1,73 +1,5 @@
 
---------------------------------------------- 2023-09-17 01:42:31.197429 ---------------------------------------------
-
-Arguments:
-
-   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
-   device:  cuda
-   attack:  ['PGD']
-   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
-   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
-   num_train_imgs:  1000
-   num_test_imgs:  100
-   dataset_class:  Tuberculosis
-   block:  -1
-   eps:  0.003
-   force_recompute:  False
-   random:  True
-   random_state:  0
---------------------------Results-----------------------------
-
---------------- sum ---------------
-Accuracy for sum: 0.5
-F1 score for sum: 0.0
--------------------------------------------------------------------
---------------- euclidean ---------------
-Accuracy for euclidean: 0.895
-F1 score for euclidean: 0.8985507246376813
--------------------------------------------------------------------
---------------- cosine ---------------
-Accuracy for cosine: 0.895
-F1 score for cosine: 0.8985507246376813
--------------------------------------------------------------------
--------------------------------------------------------------------
-
-
---------------------------------------------- 2023-09-17 05:01:06.561850 ---------------------------------------------
-
-Arguments:
-
-   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
-   device:  cuda
-   attack:  ['PGD']
-   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
-   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
-   num_train_imgs:  1000
-   num_test_imgs:  100
-   dataset_class:  Tuberculosis
-   block:  -1
-   eps:  0.01
-   force_recompute:  False
-   random:  True
-   random_state:  0
---------------------------Results-----------------------------
-
---------------- sum ---------------
-Accuracy for sum: 0.5
-F1 score for sum: 0.0
--------------------------------------------------------------------
---------------- euclidean ---------------
-Accuracy for euclidean: 0.92
-F1 score for euclidean: 0.9223300970873787
--------------------------------------------------------------------
---------------- cosine ---------------
-Accuracy for cosine: 0.925
-F1 score for cosine: 0.9268292682926829
--------------------------------------------------------------------
--------------------------------------------------------------------
-
-
---------------------------------------------- 2023-09-17 05:08:31.272792 ---------------------------------------------
+--------------------------------------------- 2023-09-17 08:38:17.242568 ---------------------------------------------
 
 Arguments:
 
@@ -82,7 +14,7 @@ Arguments:
    block:  -1
    eps:  0.03
    force_recompute:  False
-   random:  True
+   random:  False
    random_state:  0
 --------------------------Results-----------------------------
 

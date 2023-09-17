@@ -11,6 +11,7 @@ from captum.attr import Saliency
 import random
 from plots import *
 import sys
+from tqdm import tqdm
 # sys.path.insert(1, '/home/raza.imam/Documents/HC701B/Project/pytorch-grad-cam')
 # from pytorch_grad_cam.grad_cam import GradCAM
 # from pytorch_grad_cam.hirescam import HiResCAM
@@ -360,7 +361,7 @@ def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=20
     if pgd is None:
         pgd = PGD(model, lower_bound=0, upper_bound=1)
     adv_imgs = []
-    for input_img in images:
+    for input_img in tqdm(images):
         input_img = input_img.unsqueeze(0).float()
         perturbed_image = pgd.perturb(input_img.to(device), radius=radius, step_size=eps, step_num=step_num, target=target) #step_size = epsilon in PGD case
         adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
@@ -371,7 +372,7 @@ def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=20
 def apply_fgsm(model, images, device="cuda", eps=0.05, target=0):
     fgsm = FGSM(model, lower_bound=0, upper_bound=1)
     adv_imgs = []
-    for input_img in images:
+    for input_img in tqdm(images):
         input_img = input_img.unsqueeze(0).float()
         perturbed_image = fgsm.perturb(input_img.to(device), epsilon=eps, target=0) 
         adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
