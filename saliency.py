@@ -357,7 +357,7 @@ def mean_attns_N_images(
     return all_attns, mean_attns, mean_attn_diff
 
 
-def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=20, target=0, pgd = None):
+def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=40, target=0, pgd = None):
     if pgd is None:
         pgd = PGD(model, lower_bound=0, upper_bound=1)
     adv_imgs = []

@@ -36,6 +36,7 @@ transform = transforms.Compose(
 def get_reference_attn_matp(model, image_folder, block=-1, n_images=2000, device="cuda", attack_type=["FGSM", "PGD"], select_random=False, plot_path = "./plots/", eps=0.03, random_state=0):
     # print(f"On Block {block}")
     # all_attns, mean_attns, mean_attn_diff
+    print(f"Calculating mean of (first N images = {not select_random}) for reference")
     all_attns, mean_attns, mean_attn_diff = mean_attns_N_images(image_folder=image_folder, n_images=n_images, 
                                                                         block=block, model=model, n_random=select_random, device=device, attack_type=attack_type, eps = eps, random_state=random_state)
     
@@ -99,7 +100,7 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
         based on the distance between the test image's attention map 
         and the mean attention maps of clean and adversarial images.
     """
-    print(f'Testing against attacks: {attacks}')
+    # print(f'Testing against attacks: {attacks}')
 
     test_attn_flat = img_attn_map.flatten()
     mean_attns_cln_flat = mean_attn_clean.flatten()
@@ -165,7 +166,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_path', type=str, default='/home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth', help='model checkpoint path')
     parser.add_argument('--device', type=str, default='cuda', help='device')
-    parser.add_argument('--attack', type=str, default='PGD', choices=['FGSM', "PGD", "all"], help='attack type (all for all) to perform on test sample')
+    parser.add_argument('--attack', type=str, default='FGSM', choices=['FGSM', "PGD", "all"], help='attack type (all for all) to perform on test sample')
     parser.add_argument('--train_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/training", help='path to train data')
     parser.add_argument('--test_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/testing", help='path to test data')
     parser.add_argument("--num_train_imgs", type=int, default=2000, help="number of train images to use")

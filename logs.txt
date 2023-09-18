@@ -1520,3 +1520,1561 @@ Confusion matrix cosine: [[38 12]
 -------------------------------------------------------------------
 -------------------------------------------------------------------
 
+
+--------------------------------------------- 2023-09-17 23:44:28.641200 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  10
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.03
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 10]
+ [ 0 10]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8
+F1 score for euclidean: 0.8181818181818182
+Confusion matrix euclidean: [[7 3]
+ [1 9]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8
+F1 score for cosine: 0.8181818181818182
+Confusion matrix cosine: [[7 3]
+ [1 9]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-17 23:45:59.149870 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  10
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.03
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.0
+Confusion matrix sum: [[10  0]
+ [10  0]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8
+F1 score for euclidean: 0.8181818181818182
+Confusion matrix euclidean: [[7 3]
+ [1 9]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8
+F1 score for cosine: 0.8181818181818182
+Confusion matrix cosine: [[7 3]
+ [1 9]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-17 23:46:15.625443 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  10
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.03
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 10]
+ [ 0 10]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.85
+F1 score for euclidean: 0.8421052631578948
+Confusion matrix euclidean: [[9 1]
+ [2 8]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.85
+F1 score for cosine: 0.8421052631578948
+Confusion matrix cosine: [[9 1]
+ [2 8]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-17 23:47:29.923440 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  10
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 10]
+ [ 0 10]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.75
+F1 score for euclidean: 0.6666666666666666
+Confusion matrix euclidean: [[10  0]
+ [ 5  5]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.75
+F1 score for cosine: 0.6666666666666666
+Confusion matrix cosine: [[10  0]
+ [ 5  5]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-17 23:47:48.022835 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  10
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.0
+Confusion matrix sum: [[10  0]
+ [10  0]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.9
+F1 score for euclidean: 0.9
+Confusion matrix euclidean: [[9 1]
+ [1 9]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.9
+F1 score for cosine: 0.9
+Confusion matrix cosine: [[9 1]
+ [1 9]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-17 23:48:05.670075 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  10
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 10]
+ [ 0 10]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.9
+F1 score for euclidean: 0.9
+Confusion matrix euclidean: [[9 1]
+ [1 9]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.9
+F1 score for cosine: 0.9
+Confusion matrix cosine: [[9 1]
+ [1 9]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-17 23:58:52.611808 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.52
+F1 score for euclidean: 0.6477987421383649
+Confusion matrix euclidean: [[ 55 295]
+ [ 41 309]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.5242857142857142
+F1 score for cosine: 0.6505771248688352
+Confusion matrix cosine: [[ 57 293]
+ [ 40 310]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:00:02.523368 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8771428571428571
+F1 score for euclidean: 0.8778409090909092
+Confusion matrix euclidean: [[305  45]
+ [ 41 309]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8785714285714286
+F1 score for cosine: 0.8794326241134751
+Confusion matrix cosine: [[305  45]
+ [ 40 310]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:00:15.114338 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.5214285714285715
+F1 score for euclidean: 0.5221112696148359
+Confusion matrix euclidean: [[182 168]
+ [167 183]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.5185714285714286
+F1 score for cosine: 0.5206258890469417
+Confusion matrix cosine: [[180 170]
+ [167 183]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:04:31.611993 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.0
+Confusion matrix sum: [[350   0]
+ [350   0]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8771428571428571
+F1 score for euclidean: 0.8778409090909092
+Confusion matrix euclidean: [[305  45]
+ [ 41 309]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8785714285714286
+F1 score for cosine: 0.8794326241134751
+Confusion matrix cosine: [[305  45]
+ [ 40 310]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:19:46.482711 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.52
+F1 score for euclidean: 0.6477987421383649
+Confusion matrix euclidean: [[ 55 295]
+ [ 41 309]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.5242857142857142
+F1 score for cosine: 0.6505771248688352
+Confusion matrix cosine: [[ 57 293]
+ [ 40 310]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:21:38.490827 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.03
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.6514285714285715
+F1 score for euclidean: 0.7182448036951502
+Confusion matrix euclidean: [[145 205]
+ [ 39 311]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.65
+F1 score for cosine: 0.7174163783160323
+Confusion matrix cosine: [[144 206]
+ [ 39 311]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:23:14.936416 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.03
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.0
+Confusion matrix sum: [[350   0]
+ [350   0]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8442857142857143
+F1 score for euclidean: 0.8508891928864569
+Confusion matrix euclidean: [[280  70]
+ [ 39 311]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8442857142857143
+F1 score for cosine: 0.8508891928864569
+Confusion matrix cosine: [[280  70]
+ [ 39 311]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:25:29.515709 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.1
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8142857142857143
+F1 score for euclidean: 0.8199445983379501
+Confusion matrix euclidean: [[274  76]
+ [ 54 296]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8128571428571428
+F1 score for cosine: 0.8172942817294283
+Confusion matrix cosine: [[276  74]
+ [ 57 293]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:28:40.239637 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.3
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8885714285714286
+F1 score for euclidean: 0.8904494382022472
+Confusion matrix euclidean: [[305  45]
+ [ 33 317]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8885714285714286
+F1 score for cosine: 0.8904494382022472
+Confusion matrix cosine: [[305  45]
+ [ 33 317]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 00:28:42.125765 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.1
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.7871428571428571
+F1 score for euclidean: 0.7989203778677463
+Confusion matrix euclidean: [[255  95]
+ [ 54 296]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.7842857142857143
+F1 score for cosine: 0.7951153324287652
+Confusion matrix cosine: [[256  94]
+ [ 57 293]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 01:52:58.955310 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.1
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.7842857142857143
+F1 score for euclidean: 0.7967698519515477
+Confusion matrix euclidean: [[253  97]
+ [ 54 296]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.78
+F1 score for cosine: 0.7918918918918919
+Confusion matrix cosine: [[253  97]
+ [ 57 293]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 01:54:44.053215 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  50
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.1
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 50]
+ [ 0 50]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.79
+F1 score for euclidean: 0.8037383177570094
+Confusion matrix euclidean: [[36 14]
+ [ 7 43]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.78
+F1 score for cosine: 0.7924528301886793
+Confusion matrix cosine: [[36 14]
+ [ 8 42]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 01:55:49.793046 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  50
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.1
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 50]
+ [ 0 50]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.84
+F1 score for euclidean: 0.8431372549019608
+Confusion matrix euclidean: [[41  9]
+ [ 7 43]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.83
+F1 score for cosine: 0.8316831683168315
+Confusion matrix cosine: [[41  9]
+ [ 8 42]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 02:08:15.655236 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD', 'FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  200
+   num_test_imgs:  50
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.3333333333333333
+F1 score for sum: 0.5
+Confusion matrix sum: [[  0 100]
+ [  0  50]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.6533333333333333
+F1 score for euclidean: 0.6231884057971014
+Confusion matrix euclidean: [[55 45]
+ [ 7 43]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.6533333333333333
+F1 score for cosine: 0.6231884057971014
+Confusion matrix cosine: [[55 45]
+ [ 7 43]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 02:09:23.238610 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  200
+   num_test_imgs:  50
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 50]
+ [ 0 50]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.9
+F1 score for euclidean: 0.8958333333333334
+Confusion matrix euclidean: [[47  3]
+ [ 7 43]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.9
+F1 score for cosine: 0.8958333333333334
+Confusion matrix cosine: [[47  3]
+ [ 7 43]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 02:13:23.483425 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  200
+   num_test_imgs:  50
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.3
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[ 0 50]
+ [ 0 50]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.77
+F1 score for euclidean: 0.7927927927927928
+Confusion matrix euclidean: [[33 17]
+ [ 6 44]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.77
+F1 score for cosine: 0.7927927927927928
+Confusion matrix cosine: [[33 17]
+ [ 6 44]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 02:15:35.254094 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  200
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.3
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 100]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.72
+F1 score for euclidean: 0.7606837606837609
+Confusion matrix euclidean: [[55 45]
+ [11 89]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.72
+F1 score for cosine: 0.7606837606837609
+Confusion matrix cosine: [[55 45]
+ [11 89]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 02:18:50.841250 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  20
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.3
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 100]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.69
+F1 score for euclidean: 0.7438016528925621
+Confusion matrix euclidean: [[48 52]
+ [10 90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.705
+F1 score for cosine: 0.7531380753138076
+Confusion matrix cosine: [[51 49]
+ [10 90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 02:31:21.350495 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.3
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.7528571428571429
+F1 score for euclidean: 0.7856257744733581
+Confusion matrix euclidean: [[210 140]
+ [ 33 317]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.7528571428571429
+F1 score for cosine: 0.7856257744733581
+Confusion matrix cosine: [[210 140]
+ [ 33 317]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 04:34:22.800320 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD', 'FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.01
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.3333333333333333
+F1 score for sum: 0.5
+Confusion matrix sum: [[  0 200]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.6633333333333333
+F1 score for euclidean: 0.6405693950177936
+Confusion matrix euclidean: [[109  91]
+ [ 10  90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.6633333333333333
+F1 score for cosine: 0.6405693950177936
+Confusion matrix cosine: [[109  91]
+ [ 10  90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 05:26:30.127730 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD', 'FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.02
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.3333333333333333
+F1 score for sum: 0.5
+Confusion matrix sum: [[  0 200]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.6733333333333333
+F1 score for euclidean: 0.6474820143884892
+Confusion matrix euclidean: [[112  88]
+ [ 10  90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.67
+F1 score for cosine: 0.6451612903225807
+Confusion matrix cosine: [[111  89]
+ [ 10  90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 05:43:20.418724 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.02
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 100]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.87
+F1 score for euclidean: 0.8737864077669903
+Confusion matrix euclidean: [[84 16]
+ [10 90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.865
+F1 score for cosine: 0.8695652173913043
+Confusion matrix cosine: [[83 17]
+ [10 90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 06:08:20.158886 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.02
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 100]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.59
+F1 score for euclidean: 0.6870229007633587
+Confusion matrix euclidean: [[28 72]
+ [10 90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.59
+F1 score for cosine: 0.6870229007633587
+Confusion matrix cosine: [[28 72]
+ [10 90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 06:09:34.620247 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.02
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.6071428571428571
+F1 score for euclidean: 0.6934225195094761
+Confusion matrix euclidean: [[114 236]
+ [ 39 311]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.6071428571428571
+F1 score for cosine: 0.6941045606229144
+Confusion matrix cosine: [[113 237]
+ [ 38 312]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 06:11:24.627833 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.01
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.5571428571428572
+F1 score for euclidean: 0.6680942184154176
+Confusion matrix euclidean: [[ 78 272]
+ [ 38 312]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.5585714285714286
+F1 score for cosine: 0.6695187165775401
+Confusion matrix cosine: [[ 78 272]
+ [ 37 313]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 06:16:39.367132 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.01
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8871428571428571
+F1 score for euclidean: 0.8876244665718349
+Confusion matrix euclidean: [[309  41]
+ [ 38 312]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8871428571428571
+F1 score for cosine: 0.8879432624113476
+Confusion matrix cosine: [[308  42]
+ [ 37 313]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 06:21:33.568944 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.02
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8657142857142858
+F1 score for euclidean: 0.8687150837988827
+Confusion matrix euclidean: [[295  55]
+ [ 39 311]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.8642857142857143
+F1 score for cosine: 0.8678720445062587
+Confusion matrix cosine: [[293  57]
+ [ 38 312]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 06:27:32.389238 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  350
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.3
+   force_recompute:  False
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.5
+F1 score for sum: 0.6666666666666666
+Confusion matrix sum: [[  0 350]
+ [  0 350]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.7528571428571429
+F1 score for euclidean: 0.7856257744733581
+Confusion matrix euclidean: [[210 140]
+ [ 33 317]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.7528571428571429
+F1 score for cosine: 0.7856257744733581
+Confusion matrix cosine: [[210 140]
+ [ 33 317]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 07:01:20.743778 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD', 'FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.1
+   force_recompute:  True
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.3333333333333333
+F1 score for sum: 0.5
+Confusion matrix sum: [[  0 200]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.8066666666666666
+F1 score for euclidean: 0.7521367521367521
+Confusion matrix euclidean: [[154  46]
+ [ 12  88]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.81
+F1 score for cosine: 0.7532467532467532
+Confusion matrix cosine: [[156  44]
+ [ 13  87]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 07:34:31.112258 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD', 'FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.03
+   force_recompute:  True
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.3333333333333333
+F1 score for sum: 0.5
+Confusion matrix sum: [[  0 200]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.7
+F1 score for euclidean: 0.6666666666666667
+Confusion matrix euclidean: [[120  80]
+ [ 10  90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.6966666666666667
+F1 score for cosine: 0.6642066420664207
+Confusion matrix cosine: [[119  81]
+ [ 10  90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 08:29:24.019861 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD', 'FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.003
+   force_recompute:  True
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.3333333333333333
+F1 score for sum: 0.5
+Confusion matrix sum: [[  0 200]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.6466666666666666
+F1 score for euclidean: 0.6293706293706294
+Confusion matrix euclidean: [[104  96]
+ [ 10  90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.64
+F1 score for cosine: 0.6250000000000001
+Confusion matrix cosine: [[102  98]
+ [ 10  90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
+
+--------------------------------------------- 2023-09-18 09:01:17.651303 ---------------------------------------------
+
+Arguments:
+
+   model_path:  /home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth
+   device:  cuda
+   attack:  ['PGD', 'FGSM']
+   train_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+   test_path:  /home/raza.imam/Documents/HC701B/Project/data/TB_data/testing
+   num_train_imgs:  2000
+   num_test_imgs:  100
+   dataset_class:  Tuberculosis
+   block:  -1
+   eps:  0.3
+   force_recompute:  True
+   random:  False
+   random_state:  0
+   reference_attack:  ['PGD', 'FGSM']
+--------------------------Results-----------------------------
+
+--------------- sum ---------------
+Accuracy for sum: 0.3333333333333333
+F1 score for sum: 0.5
+Confusion matrix sum: [[  0 200]
+ [  0 100]]
+-------------------------------------------------------------------
+--------------- euclidean ---------------
+Accuracy for euclidean: 0.7833333333333333
+F1 score for euclidean: 0.7346938775510204
+Confusion matrix euclidean: [[145  55]
+ [ 10  90]]
+-------------------------------------------------------------------
+--------------- cosine ---------------
+Accuracy for cosine: 0.7833333333333333
+F1 score for cosine: 0.7346938775510204
+Confusion matrix cosine: [[145  55]
+ [ 10  90]]
+-------------------------------------------------------------------
+-------------------------------------------------------------------
+
