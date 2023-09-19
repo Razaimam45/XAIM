@@ -14,7 +14,7 @@ device = "cuda"
 model = torch.load('/home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth')
 model = model.to(device)
 
-"""
+# """
 image_folder = "/home/raza.imam/Documents/HC701B/Project/adv_data/TB_adversarial_data/testing/Tuberculosis"
 image_files = [
         f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")
@@ -31,21 +31,21 @@ transform = transforms.Compose(
     ]
 )
 
-image_path = os.path.join(image_folder, image_files[0])
+image_path = os.path.join(image_folder, image_files[19])
 image = Image.open(image_path)
 img = transform(image)
 img = img.unsqueeze(0)
 
-eps=0.03
+eps=0.1
 
 # ---Captum---
-pgd = PGD(model, lower_bound=0, upper_bound=1)
-pgd_image = pgd.perturb(img.cuda(), radius=0.13, step_size=eps, step_num=7, target=0) 
-pgd_img = torch.tensor((pgd_image.cpu().data.numpy()))
+# pgd = PGD(model, lower_bound=0, upper_bound=1)
+# pgd_image = pgd.perturb(img.cuda(), radius=0.13, step_size=eps, step_num=7, target=0) 
+# pgd_img = torch.tensor((pgd_image.cpu().data.numpy()))
 
-fgsm = FGSM(model, lower_bound=0, upper_bound=1)
-fgsm_image = fgsm.perturb(img.cuda(), epsilon=eps, target=0)
-fgsm_img = torch.tensor((fgsm_image.cpu().data.numpy()))
+# fgsm = FGSM(model, lower_bound=0, upper_bound=1)
+# fgsm_image = fgsm.perturb(img.cuda(), epsilon=eps, target=0)
+# fgsm_img = torch.tensor((fgsm_image.cpu().data.numpy()))
 # ---Captum---
 
 # # ---Torchattack---
@@ -59,11 +59,12 @@ fgsm_img = torch.tensor((fgsm_image.cpu().data.numpy()))
 # # ---Torchattack--
 
 # ---Foolbox---
-# f_model = fb.PyTorchModel(model, bounds=(0,1), device='cuda') #Foolbox's PGD
-# f_pgd = fb.attacks.PGD()
-# _, pgd_img, success = f_pgd(f_model, images.cuda(), labels.cuda(), epsilons=eps)
-# f_fgsm = fb.attacks.PGD()
-# _, fgsm_img, success = f_fgsm(f_model, images.cuda(), labels.cuda(), epsilons=eps)
+f_model = fb.PyTorchModel(model, bounds=(0,1), device='cuda') #Foolbox's PGD
+labels = torch.tensor([1])
+f_pgd = fb.attacks.PGD()
+_, pgd_img, success = f_pgd(f_model, img.cuda(), labels.cuda(), epsilons=eps)
+f_fgsm = fb.attacks.FGSM()
+_, fgsm_img, success = f_fgsm(f_model, img.cuda(), labels.cuda(), epsilons=eps)
 # ---Foolbox---
 
 img_attn = get_blk_attn(input_img=img.cuda(), blk=11, model=model)
@@ -78,9 +79,9 @@ for i, fig in enumerate([img.squeeze(0).permute(2,1,0).cpu(), pgd_img.squeeze(0)
     plt.imshow(fig, cmap='inferno')
     plt.title(text[i])
 plt.show()
-"""
-
 # """
+
+"""
 import os
 import torch
 import numpy as np
@@ -180,4 +181,4 @@ for block in range(num_blocks):
 
 plt.tight_layout()
 plt.show()
-# """
+"""
