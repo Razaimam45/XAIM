@@ -320,7 +320,7 @@ def mean_attns_N_images(
         # if attack_type=="all":
         #     attack_type = ATTACK_LIST # ["PGD", "FGSM"]
         attack_type = [attack_type]
-
+    print(device)
     if "PGD" in attack_type:         
         adv_images_tensor_pdg = apply_pdg(
             model = model,
@@ -328,6 +328,7 @@ def mean_attns_N_images(
             device = device,
             eps = eps,
         )
+
         attentions_adv_pdg, mean_attns_pdg = apply_attn_on_images(model=model, block=block, images = adv_images_tensor_pdg, device=device)
         mean_attns_diff_pdg = mean_attns_pdg - mean_attns_cln
 
@@ -356,25 +357,41 @@ def mean_attns_N_images(
     # return mean_attns_cln, mean_attns, mean_attn_diff, attentions_clean, all_attns
     return all_attns, mean_attns, mean_attn_diff
 
-
-def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=40, target=0, pgd = None):
-    if pgd is None:
-        pgd = PGD(model, lower_bound=0, upper_bound=1)
+import foolbox as fb
+def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=40, target=0, pgd = None, attack_lib='Foolbox'):
+    # if pgd is None:
+    #     pgd = PGD(model, lower_bound=0, upper_bound=1)
+    print(attack_lib)
+    pgd = PGD(model, lower_bound=0, upper_bound=1)
+    f_model = fb.PyTorchModel(model, bounds=(0,1), device='cuda') #Foolbox's PGD
+    f_pgd = fb.attacks.PGD()
+    labels = torch.tensor([1])
     adv_imgs = []
     for input_img in tqdm(images):
         input_img = input_img.unsqueeze(0).float()
-        perturbed_image = pgd.perturb(input_img.to(device), radius=radius, step_size=eps, step_num=step_num, target=target) #step_size = epsilon in PGD case
+        if attack_lib=='Foolbox':
+            _, perturbed_image, success = f_pgd(f_model, input_img.to(device), labels.to(device), epsilons=eps)
+        else:
+            perturbed_image = pgd.perturb(input_img.to(device), radius=radius, step_size=eps, step_num=step_num, target=target) #step_size = epsilon in PGD case
         adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
+        
         adv_imgs.append(adv_img.squeeze(0))
     adv_imgs = torch.stack(adv_imgs)
     return adv_imgs
 
-def apply_fgsm(model, images, device="cuda", eps=0.05, target=0):
+def apply_fgsm(model, images, device="cuda", eps=0.03, target=0, attack_lib="Foolbox"):
+    print(attack_lib)
     fgsm = FGSM(model, lower_bound=0, upper_bound=1)
+    f_model = fb.PyTorchModel(model, bounds=(0,1), device='cuda') #Foolbox's PGD
+    f_fgsm = fb.attacks.FGSM()
+    labels = torch.tensor([1])
     adv_imgs = []
     for input_img in tqdm(images):
         input_img = input_img.unsqueeze(0).float()
-        perturbed_image = fgsm.perturb(input_img.to(device), epsilon=eps, target=0) 
+        if attack_lib=='Foolbox':
+            _, perturbed_image, success = f_fgsm(f_model, input_img.to(device), labels.to(device), epsilons=eps)
+        else:
+            perturbed_image = fgsm.perturb(input_img.to(device), epsilon=eps, target=0) 
         adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
         adv_imgs.append(adv_img.squeeze(0))
     adv_imgs = torch.stack(adv_imgs)

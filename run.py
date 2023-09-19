@@ -125,13 +125,14 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
     if "sum" in method:
         sum_distance_to_normal = np.sum((test_attn_flat - mean_attns_cln_flat))
 
-        sum_pred = "Adversarial"
+        sum_pred = "Clean"
 
         for key in attacks:
             sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
             # if sum_distance_to_normal > sum_distance_to_adversarial:
-            if sum_distance_to_normal < sum_distance_to_adversarial:
-                sum_pred = "Clean"
+            if sum_distance_to_normal > sum_distance_to_adversarial:
+                sum_pred = "Adversarial"
+                break
             # sum_pred = "Clean" if sum_distance_to_normal < sum_distance_to_adversarial else "Adversarial"
 
         preds["sum"] = sum_pred
@@ -139,22 +140,26 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
     if "euclidean" in method:
         euc_distance_to_normal = euclidean(test_attn_flat, mean_attns_cln_flat)
 
-        euc_pred = "Adversarial"
+        euc_pred = "Clean"
         for key in attacks:
             euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attn_adv[key].flatten())
-            if euc_distance_to_normal < euc_distance_to_adversarial:
-                euc_pred = "Clean"
+            if euc_distance_to_normal > euc_distance_to_adversarial:
+                euc_pred = "Adversarial"
+                break
+            print(f"For {key}: ", euc_pred)
         # euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attns_adv_flat)
         # euc_pred = "Clean" if euc_distance_to_normal < euc_distance_to_adversarial else "Adversarial"
         preds["euclidean"] = euc_pred
+        print(f"Final: ", euc_pred)
 
     if "cosine" in method:
         cosine_distance_to_normal = cosine_similarity([test_attn_flat], [mean_attns_cln_flat])
-        cos_pred = "Adversarial"
+        cos_pred = "Clean"
         for key in attacks:
             cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attn_adv[key].flatten()])
-            if cosine_distance_to_normal > cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
-                cos_pred = "Clean"
+            if cosine_distance_to_normal < cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
+                cos_pred = "Adversarial"
+                break
         # cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attns_adv_flat])
         # cos_pred = "Clean" if cosine_distance_to_normal > cosine_distance_to_adversarial else "Adversarial"
         preds["cosine"] = cos_pred
@@ -169,11 +174,11 @@ if __name__ == "__main__":
     parser.add_argument('--attack', type=str, default='FGSM', choices=['FGSM', "PGD", "all"], help='attack type (all for all) to perform on test sample')
     parser.add_argument('--train_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/training", help='path to train data')
     parser.add_argument('--test_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/testing", help='path to test data')
-    parser.add_argument("--num_train_imgs", type=int, default=2000, help="number of train images to use")
+    parser.add_argument("--num_train_imgs", type=int, default=500, help="number of train images to use")
     parser.add_argument("--num_test_imgs", type=int, default=10, help="number of test images to use")
     parser.add_argument("--dataset_class", type=str, default="Tuberculosis", choices=["Tuberculosis", "Normal"], help="dataset class")
     parser.add_argument("--block", type=int, default=-1, help="ViT block to take attention from")
-    parser.add_argument("--eps", type=float, default=0.003, help="epsilon for adversarial attacks")
+    parser.add_argument("--eps", type=float, default=0.5, help="epsilon for adversarial attacks")
     parser.add_argument("--force_recompute", action="store_true", help="force recompute mean images")
     parser.add_argument("--random", default=False, help="select random images for mean attn")
     parser.add_argument("--random_state", type=int, default=0, help="random state for experiments (train and test both)")
