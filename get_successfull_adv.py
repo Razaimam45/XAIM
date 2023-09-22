@@ -13,7 +13,7 @@ import PIL
 import argparse
 
 # %%
-model_path = "../vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth"
+model_path = "/home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth"
 
 # %%
 def get_model(model_path, device):
@@ -65,48 +65,33 @@ def get_blk_attn(input_img, blk, model, patch_size=16): #REVIEW:function to get 
 
     return mean_attention, torch.argmax(out).item() #REVIEW:Return mean of 12 head attentions
 
+def folder_sort(image_files):
+    image_files = sorted(image_files, key=lambda x: int(x.split('.')[0]))
+    return image_files
 
 # %%
 classes = ["Normal", "Tuberculosis"]
-device = 'cuda:3'
-data_path = '../data/TB_data'
+device = 'cuda'
+data_path = '/home/raza.imam/Documents/HC701B/Project/data/TB_data'
 
 # %%
 model = get_model(model_path=model_path, device=device)
 
 
 normal_testing = [f for f in os.listdir(os.path.join(data_path, 'testing', classes[0])) if f.endswith(".jpg") or f.endswith(".png")]
+normal_testing = (normal_testing)[0:10]
 tb_testing = [f for f in os.listdir(os.path.join(data_path, 'testing', classes[1])) if f.endswith(".jpg") or f.endswith(".png")]
-normal_traning = [f for f in os.listdir(os.path.join(data_path, 'training', classes[0])) if f.endswith(".jpg") or f.endswith(".png")]
-tb_traning = [f for f in os.listdir(os.path.join(data_path, 'training', classes[1])) if f.endswith(".jpg") or f.endswith(".png")]
-
-
-img = PIL.Image.open(os.path.join(data_path, 'training', classes[0], normal_traning[100]))
-img = transform(img).unsqueeze(0).to(device)
-pred = model(img)
-print(pred, normal_traning[3])
-
-
-img = PIL.Image.open(os.path.join(data_path, 'training', classes[1], tb_traning[100]))
-img = transform(img).unsqueeze(0).to(device)
-pred = model(img)
-pred, tb_traning[0]
+tb_testing = (tb_testing)[0:10]
 
 blk = -1
 
-successfull_data_path = '../data/TB_data/successfull_samples'
-os.makedirs(os.path.join(successfull_data_path, 'training', "Normal"), exist_ok=True)
-os.makedirs(os.path.join(successfull_data_path, 'training', "Tuberculosis"), exist_ok=True)
-os.makedirs(os.path.join(successfull_data_path, 'testing', "Normal"), exist_ok=True)
-os.makedirs(os.path.join(successfull_data_path, 'testing', "Tuberculosis"), exist_ok=True)
-
 # %%
-from captum.robust import PGD, FGSM
+# from captum.robust import PGD, FGSM
 import foolbox as fb
 
 
 # %%
-def apply_pdg(f_pgd, f_model, images, device="cuda:3", eps=0.03, radius = 0.13, step_num=40, labels=torch.tensor([1]), target=0, pgd = None, attack_lib='Foolbox'):
+def apply_pdg(f_pgd, f_model, images, device="cuda", eps=0.03, labels=None, target=0, attack_lib='Foolbox'):
     # if pgd is None:
     #     pgd = PGD(model, lower_bound=0, upper_bound=1)
 
@@ -116,8 +101,8 @@ def apply_pdg(f_pgd, f_model, images, device="cuda:3", eps=0.03, radius = 0.13, 
         input_img = input_img.float()
         if attack_lib=='Foolbox':
             _, perturbed_image, success = f_pgd(f_model, input_img.to(device), labels.to(device), epsilons=eps)
-        else:
-            perturbed_image = pgd.perturb(input_img.to(device), radius=radius, step_size=eps, step_num=step_num, target=target) #step_size = epsilon in PGD case
+        # else:
+        #     perturbed_image = pgd.perturb(input_img.to(device), radius=radius, step_size=eps, step_num=step_num, target=target) #step_size = epsilon in PGD case
         adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
         
         adv_imgs.append(adv_img.squeeze(0))
@@ -125,14 +110,14 @@ def apply_pdg(f_pgd, f_model, images, device="cuda:3", eps=0.03, radius = 0.13, 
     return adv_imgs
 
 
-def apply_fgsm(images, device="cuda:3", eps=0.03, attack_lib="Foolbox", labels = torch.tensor([1]), fgsm = None, f_fgsm = None, f_model = None):    
+def apply_fgsm(images, device="cuda", eps=0.03, attack_lib="Foolbox", labels = None, f_fgsm = None, f_model = None):    
     adv_imgs = []
     for input_img in tqdm(images):
         input_img = input_img.float()
         if attack_lib=='Foolbox':
             _, perturbed_image, success = f_fgsm(f_model, input_img.to(device), labels.to(device), epsilons=eps)
-        else:
-            perturbed_image = fgsm.perturb(input_img.to(device), epsilon=eps, target=0) 
+        # else:
+        #     perturbed_image = fgsm.perturb(input_img.to(device), epsilon=eps, target=0) 
         adv_img = torch.tensor((perturbed_image.cpu().data.numpy()))
         adv_imgs.append(adv_img.squeeze(0))
     adv_imgs = torch.stack(adv_imgs)
@@ -140,54 +125,34 @@ def apply_fgsm(images, device="cuda:3", eps=0.03, attack_lib="Foolbox", labels =
 
 
 print('loading the images')
-
-# %%
 image_test_normal = []
 for img_path in tqdm(normal_testing):
     img = PIL.Image.open(os.path.join(data_path, 'testing', classes[0], img_path))
     img = transform(img).unsqueeze(0).to(device)
     image_test_normal.append(img)
 
-
 image_test_tb = []
 for img_path in tqdm(tb_testing):
     img = PIL.Image.open(os.path.join(data_path, 'testing', classes[1], img_path))
     img = transform(img).unsqueeze(0).to(device)
     image_test_tb.append(img)
+print('loading done')
 
+def get_success_unsuccess_adv_images (images_list, cls_idx):
+    success_imgs = []
+    unsuccess_imgs = []
+    success_imgs_attns = []
+    unsuccess_imgs_attns = []
 
-images_train_normal = []
-for img_path in tqdm(normal_traning):
-    img = PIL.Image.open(os.path.join(data_path, 'training', classes[0], img_path))
-    img = transform(img).unsqueeze(0).to(device)
-    images_train_normal.append(img)
-
-
-images_train_tb = []
-for img_path in tqdm(tb_traning):
-    img = PIL.Image.open(os.path.join(data_path, 'training', classes[1], img_path))
-    img = transform(img).unsqueeze(0).to(device)
-    images_train_tb.append(img)
-
-# %%
-# adv_images_test_normal = apply_pdg(model, image_test_normal)
-
-# %%
-def get_successful_adv_images (images_list, cls_idx):
-    selected_imgs = []
-    # selected_imgs_name = []
-    attns = []
     for img in tqdm(images_list):
         attn, pred = get_blk_attn(img.unsqueeze(0).to(device), blk, model)
         if pred != cls_idx: # check if pred is not correct
-            selected_imgs.append(img.permute(1,2,0))
-            # selected_imgs_name.append(img_path)
-            attns.append(attn)
-            # break
-            # img.save(os.path.join(data_path, 'testing', classes[pred_i], img_path[:-4]+'.png'))
-            # break
-    # return selected_imgs_name, selected_imgs, attns
-    return selected_imgs, attns
+            success_imgs.append(img.permute(1,2,0)) #append to successful adv samples
+            success_imgs_attns.append(attn)
+        else:
+            unsuccess_imgs.append(img.permute(1,2,0)) #append to UNsuccessful adv samples
+            unsuccess_imgs_attns.append(attn)
+    return success_imgs, success_imgs_attns, unsuccess_imgs, unsuccess_imgs_attns
 
 # -------------------------------------- # 
 # -------------------------------------- #
@@ -200,18 +165,33 @@ def get_successful_adv_images (images_list, cls_idx):
 # args = parser.parse_args()
 # eps = args.eps
 
-print("----------------------------------------------")
-print("----------------------------------------------")
-# print(f'Running for Epsilon = {eps}')
-print("----------------------------------------------")
-print("----------------------------------------------")
+# print("----------------------------------------------")
+# print("----------------------------------------------")
+# # print(f'Running for Epsilon = {eps}')
+# print("----------------------------------------------")
+# print("----------------------------------------------")
+
+#Saving clean test Normal
+save_folder_cleans = f"./data2/clean/Test/Normal"
+print(f'Saving {len(image_test_normal)} cleans to {save_folder_cleans}')
+os.makedirs(save_folder_cleans, exist_ok=True)
+for i, img in tqdm(enumerate(image_test_normal)):
+    img = img.squeeze(0).squeeze(0).permute(1, 2 ,0).to('cpu')
+    plt.imsave(os.path.join(save_folder_cleans, f"{i}.png"), np.array(img))
+    
+#Saving clean test TB
+save_folder_cleans = f"./data2/clean/Test/TB"
+print(f'Saving {len(image_test_tb)} cleans to {save_folder_cleans}')
+os.makedirs(save_folder_cleans, exist_ok=True)
+for i, img in tqdm(enumerate(image_test_tb)):
+    img = img.squeeze(0).squeeze(0).permute(1, 2, 0).to('cpu')
+    plt.imsave(os.path.join(save_folder_cleans, f"{i}.png"), np.array(img))
+
 
 # %%
-pgd = PGD(model, lower_bound=0, upper_bound=1)
 f_model = fb.PyTorchModel(model, bounds=(0,1), device=device) #Foolbox's PGD
 f_pgd = fb.attacks.PGD()
 
-fgsm = FGSM(model, lower_bound=0, upper_bound=1)
 f_model = fb.PyTorchModel(model, bounds=(0,1), device=device) #Foolbox's PGD
 f_fgsm = fb.attacks.FGSM()
 
@@ -223,84 +203,51 @@ for eps in [0.03, 0.06, 0.01]:
         if attack == 'PDG':
             adv_images_test_normal = apply_pdg(images=  image_test_normal, f_model=f_model, f_pgd=f_pgd, labels=torch.tensor([pred_i]), eps = eps)
         else:
-            adv_images_test_normal = apply_fgsm(images=  image_test_normal, f_model=f_model, fgsm=fgsm, f_fgsm = f_fgsm, labels=torch.tensor([pred_i]), device=device, eps=eps)
-        selected_imgs, attns = get_successful_adv_images(adv_images_test_normal, pred_i)
+            adv_images_test_normal = apply_fgsm(images=  image_test_normal, f_model=f_model, f_fgsm = f_fgsm, labels=torch.tensor([pred_i]), device=device, eps=eps)
+        succ_imgs, succ_attns, unsucc_imgs, unsucc_attns = get_success_unsuccess_adv_images(adv_images_test_normal, pred_i)
+        save_folder_succ_imgs = f"./data2/successful_{eps}/{attack}/Test/Normal"
+        save_folder_succ_attns = f"./data2/successful_attns_{eps}/{attack}/Test/Normal"
+        save_folder_unsucc_imgs = f"./data2/unsuccessful_{eps}/{attack}/Test/Normal"
+        save_folder_unsucc_attns = f"./data2/unsuccessful_attns_{eps}/{attack}/Test/Normal"
+        print(f'Saving {len(succ_imgs)} images to {save_folder_succ_imgs}')
+        print(f'Saving {len(unsucc_imgs)} images to {save_folder_unsucc_imgs}')
+        os.makedirs(save_folder_succ_imgs, exist_ok=True)
+        os.makedirs(save_folder_succ_attns, exist_ok=True)
+        os.makedirs(save_folder_unsucc_imgs, exist_ok=True)
+        os.makedirs(save_folder_unsucc_attns, exist_ok=True)
+        for i, img in tqdm(enumerate(succ_imgs)):
+            plt.imsave(os.path.join(save_folder_succ_imgs, f"{i}.png"), np.array(img))
+            np.save(os.path.join(save_folder_succ_attns, f"{i}.npy"), succ_attns[i])
+        for i, img in tqdm(enumerate(unsucc_imgs)):
+            plt.imsave(os.path.join(save_folder_unsucc_imgs, f"{i}.png"), np.array(img))
+            np.save(os.path.join(save_folder_unsucc_attns, f"{i}.npy"), unsucc_attns[i])
 
-        save_folder = f"./successful_{eps}/{attack}/Test/Normal"
-        save_folder_attn = f"./successfull_attn_{eps}/{attack}/Test/Normal"
-        print(f'Saving {len(selected_imgs)} images to {save_folder}')
-        os.makedirs(save_folder, exist_ok=True)
-        os.makedirs(save_folder_attn, exist_ok=True)
-        for i, img in enumerate(selected_imgs):
-            plt.imsave(os.path.join(save_folder, f"{i}.png"), np.array(img))
-            np.save(os.path.join(save_folder_attn, f"{i}.npy"), attns[i])
-
-
-        # Test TB
+        print("----------------------------------------------")
+        print("----------------------------------------------")
+        
+        # for TB class
         pred_i = 1 # 0 --> Normal, 1 --> TB
         print(classes[pred_i])
         print(f'Running {attack} for Epsilon = {eps} on Test TB')
         if attack == 'PDG':
-            adv_images_test_normal = apply_pdg(images=image_test_tb, f_model=f_model, f_pgd=f_pgd, labels=torch.tensor([pred_i]), eps = eps)
-
+            adv_images_test_tb = apply_pdg(images=  image_test_tb, f_model=f_model, f_pgd=f_pgd, labels=torch.tensor([pred_i]), eps = eps)
         else:
-            adv_images_test_normal = apply_fgsm(images=image_test_tb, f_model=f_model, fgsm=fgsm, f_fgsm = f_fgsm, labels=torch.tensor([pred_i]), device=device, eps=eps)
-
-        # for tuberculosis
-        selected_imgs, attns = get_successful_adv_images(adv_images_test_normal, pred_i)
-
-
-        save_folder = f"./successful_{eps}/{attack}/Test/TB"
-        save_folder_attn = f"./successfull_attn_{eps}/{attack}/Test/TB"
-        print(f'Saving {len(selected_imgs)} images to {save_folder}')
-
-        os.makedirs(save_folder, exist_ok=True)
-        os.makedirs(save_folder_attn, exist_ok=True)
-
-        for i, img in enumerate(selected_imgs):
-            plt.imsave(os.path.join(save_folder, f"{i}.png"), np.array(img))
-            np.save(os.path.join(save_folder_attn, f"{i}.npy"), attns[i])
-
-
-        # train normal
-
-        pred_i = 0 # 0 --> Normal, 1 --> TB
-        print(classes[pred_i])
-        print(f'Running {attack} for Epsilon = {eps} on Train normal')
-        if attack == 'PDG':
-            adv_images_test_normal = apply_pdg(images=images_train_normal, f_model=f_model, f_pgd=f_pgd, labels=torch.tensor([pred_i]), eps = eps)
-        else:
-            adv_images_test_normal = apply_fgsm(images=images_train_normal, f_model=f_model, fgsm=fgsm, f_fgsm = f_fgsm, labels=torch.tensor([pred_i]), device=device, eps=eps)
-
-        selected_imgs, attns = get_successful_adv_images(adv_images_test_normal, pred_i)
-        save_folder = f"./successful_{eps}/{attack}/Train/Normal"
-        save_folder_attn = f"./successfull_attn_{eps}/{attack}/Train/Normal"
-        print(f'Saving {len(selected_imgs)} images to {save_folder}')
-        os.makedirs(save_folder, exist_ok=True)
-        os.makedirs(save_folder_attn, exist_ok=True)
-        for i, img in enumerate(selected_imgs):
-            plt.imsave(os.path.join(save_folder, f"{i}.png"), np.array(img))
-            np.save(os.path.join(save_folder_attn, f"{i}.npy"), attns[i])
-
-
-
-
-        pred_i = 1 # 0 --> Normal, 1 --> TB
-        print(classes[pred_i])
-        print(f'Running {attack} for Epsilon = {eps} on Train TB')
-        if attack == 'PDG':
-            adv_images_test_normal = apply_pdg(images= images_train_tb, f_model=f_model, f_pgd=f_pgd, labels=torch.tensor([pred_i]), eps = eps)
-        else:
-            adv_images_test_normal = apply_fgsm(images= images_train_tb, f_model=f_model, fgsm=fgsm, f_fgsm = f_fgsm, labels=torch.tensor([pred_i]), device=device, eps=eps)
-
-        selected_imgs, attns = get_successful_adv_images(adv_images_test_normal, pred_i)
-
-        save_folder = f"./successful_{eps}/{attack}/Train/TB"
-        save_folder_attn = f"./successfull_attn_{eps}/{attack}/Train/TB"
-        print(f'Saving {len(selected_imgs)} images to {save_folder}')
-        os.makedirs(save_folder, exist_ok=True)
-        os.makedirs(save_folder_attn, exist_ok=True)
-        for i, img in enumerate(selected_imgs):
-            plt.imsave(os.path.join(save_folder, f"{i}.png"), np.array(img))
-            np.save(os.path.join(save_folder_attn, f"{i}.npy"), attns[i])
-
+            adv_images_test_tb = apply_fgsm(images=  image_test_tb, f_model=f_model, f_fgsm = f_fgsm, labels=torch.tensor([pred_i]), device=device, eps=eps)
+        succ_imgs, succ_attns, unsucc_imgs, unsucc_attns = get_success_unsuccess_adv_images(adv_images_test_tb, pred_i)
+        
+        save_folder_succ_imgs = f"./data2/successful_{eps}/{attack}/Test/TB"
+        save_folder_succ_attns = f"./data2/successful_attns_{eps}/{attack}/Test/TB"
+        save_folder_unsucc_imgs = f"./data2/unsuccessful_{eps}/{attack}/Test/TB"
+        save_folder_unsucc_attns = f"./data2/unsuccessful_attns_{eps}/{attack}/Test/TB"
+        print(f'Saving {len(succ_imgs)} images to {save_folder_succ_imgs}')
+        print(f'Saving {len(unsucc_imgs)} images to {save_folder_unsucc_imgs}')
+        os.makedirs(save_folder_succ_imgs, exist_ok=True)
+        os.makedirs(save_folder_succ_attns, exist_ok=True)
+        os.makedirs(save_folder_unsucc_imgs, exist_ok=True)
+        os.makedirs(save_folder_unsucc_attns, exist_ok=True)
+        for i, img in tqdm(enumerate(succ_imgs)):
+            plt.imsave(os.path.join(save_folder_succ_imgs, f"{i}.png"), np.array(img))
+            np.save(os.path.join(save_folder_succ_attns, f"{i}.npy"), succ_attns[i])
+        for i, img in tqdm(enumerate(unsucc_imgs)):
+            plt.imsave(os.path.join(save_folder_unsucc_imgs, f"{i}.png"), np.array(img))
+            np.save(os.path.join(save_folder_unsucc_attns, f"{i}.npy"), unsucc_attns[i])

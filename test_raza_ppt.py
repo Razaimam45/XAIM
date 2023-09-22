@@ -4,8 +4,6 @@ from saliency import get_blk_attn
 from utils import *
 from plots import *
 from run import *
-from torchattacks import PGD as t_PGD
-from torchattacks import FGSM as t_FGSM
 import foolbox as fb
 
 device = "cuda"
@@ -14,7 +12,7 @@ device = "cuda"
 model = torch.load('/home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth')
 model = model.to(device)
 
-# """
+"""
 image_folder = "/home/raza.imam/Documents/HC701B/Project/adv_data/TB_adversarial_data/testing/Tuberculosis"
 image_files = [
         f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")
@@ -36,27 +34,8 @@ image = Image.open(image_path)
 img = transform(image)
 img = img.unsqueeze(0)
 
-eps=0.1
-
-# ---Captum---
-# pgd = PGD(model, lower_bound=0, upper_bound=1)
-# pgd_image = pgd.perturb(img.cuda(), radius=0.13, step_size=eps, step_num=7, target=0) 
-# pgd_img = torch.tensor((pgd_image.cpu().data.numpy()))
-
-# fgsm = FGSM(model, lower_bound=0, upper_bound=1)
-# fgsm_image = fgsm.perturb(img.cuda(), epsilon=eps, target=0)
-# fgsm_img = torch.tensor((fgsm_image.cpu().data.numpy()))
-# ---Captum---
-
-# # ---Torchattack---
-# images = img
-# labels = torch.tensor([0])
-
-# t_pgd = t_PGD(model, eps=eps, alpha=2/225, steps=100, random_start=True)
-# pgd_img = t_pgd(images, labels)
-# t_fgsm = t_FGSM(model, eps=eps)
-# fgsm_img = t_fgsm(images, labels)
-# # ---Torchattack--
+eps=0.03
+cls_idx = 0 # 0 --> Normal, 1 --> TB
 
 # ---Foolbox---
 f_model = fb.PyTorchModel(model, bounds=(0,1), device='cuda') #Foolbox's PGD
@@ -79,9 +58,10 @@ for i, fig in enumerate([img.squeeze(0).permute(2,1,0).cpu(), pgd_img.squeeze(0)
     plt.imshow(fig, cmap='inferno')
     plt.title(text[i])
 plt.show()
-# """
-
 """
+
+# For epsilon vs block plot
+# """
 import os
 import torch
 import numpy as np
@@ -95,7 +75,7 @@ from torchattacks import PGD as t_PGD
 from torchattacks import FGSM as t_FGSM
 
 # Define the image folder and load the model
-image_folder = "/home/raza.imam/Documents/HC701B/Project/data/TB_data/testing/Tuberculosis/"
+image_folder = "/home/raza.imam/Documents/XAIM/XAIM/data/successful_0.03/PDG/Test/TB"
 image_files = [
     f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")
 ]
@@ -112,7 +92,7 @@ transform = transforms.Compose(
 )
 
 # Define the number of images to read (N)
-N = 20  # Change this to the desired number of images
+N = 2  # Change this to the desired number of images
 
 # Create an empty list to store the images
 images_list = []
@@ -181,4 +161,4 @@ for block in range(num_blocks):
 
 plt.tight_layout()
 plt.show()
-"""
+# """
