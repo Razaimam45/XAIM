@@ -6,21 +6,18 @@ import numpy as np
 from PIL import Image
 from torchvision import transforms
 from captum.robust import PGD, FGSM
-
-# from model import vit_base_patch16_224
-# from timm.models import vit_base_patch16_224
 import sys
-# sys.path.append('../')
 from saliency import *
 from utils import *
 from plots import *
 import argparse
-
 from saliency import mean_attns_N_images
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import euclidean
+from skimage.metrics import structural_similarity as ssim
 from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+import datetime
 
 transform = transforms.Compose(
     [
@@ -44,7 +41,7 @@ def get_reference_attn_matp(
         split_path = None,
         class_name = None,
         # attack_type=["FGSM", "PGD"], 
-        attack_type="PGD", 
+        attack_type="PDG", 
         eps=0.03, 
         random_state=0
         ):
@@ -72,13 +69,11 @@ def get_reference_attn_matp(
                                                 random_state=random_state
                                                 )
     
-    for attack_name in attack_type:
-        hist_plot(mean_attns['clean'], mean_attns[attack_name], n_images, no_show=True)
-        os.makedirs(os.path.join(plot_path, attack_name), exist_ok=True)
-        plt.savefig(os.path.join(plot_path, attack_name, f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.png"))
-
+    # for attack_name in attack_type:
+    hist_plot(mean_attns['clean'], mean_attns[attack_type], n_images, no_show=True)
+    os.makedirs(os.path.join(plot_path, attack_type), exist_ok=True)
+    plt.savefig(os.path.join(plot_path, attack_type, f"mean_attns_{attack_type}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.png"))
     return all_attns, mean_attns, mean_attn_diff
-
 
 def get_model(model_path, device):
     model = torch.load(model_path)
@@ -87,15 +82,8 @@ def get_model(model_path, device):
     return model
 
 def get_images_attns(model, image_folder, n_imgs=20, block=-1, device="cuda", attack_type=['all'], eps=0.05, plot=False, n_random = False, random_state=None):
-    # image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")]
-    # random.seed(random_state)
-    # image_files = random.sample(image_files, n_imgs)
     print(f"n_random test = {n_random}")
     image_files = [f for f in os.listdir(image_folder) if f.endswith(".jpg") or f.endswith(".png")]
-    # image_files_adv = [f for f in os.listdir(os.path.join(image_folder, "adversarial")) if f.endswith(".jpg") or f.endswith(".png")]
-    # image_files_clean = [f for f in os.listdir(os.path.join(image_folder, "clean")) if f.endswith(".jpg") or f.endswith(".png")]
-
-    
     if n_random==False:
         image_files = image_files[:n_imgs]  #first N images
         print(f"First {len(image_files)} test files loaded")
@@ -103,11 +91,9 @@ def get_images_attns(model, image_folder, n_imgs=20, block=-1, device="cuda", at
         random.seed(random_state)
         image_files = random.sample(image_files, n_imgs) #random N images
         print(f"Random {len(image_files)} test files loaded")
-    
     all_imgs = []
     all_attns = []
     all_attn_diff = []
-
     for img_name in image_files:
         img, attns, attn_diff = test_img_attn(
             image_folder=image_folder, 
@@ -122,67 +108,52 @@ def get_images_attns(model, image_folder, n_imgs=20, block=-1, device="cuda", at
         all_imgs.append(img)        
         all_attns.append(attns)
         all_attn_diff.append(attn_diff)
-
     return all_imgs, all_attns, all_attn_diff, image_files
 
-
-def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all', attacks = ['PGD', 'FGSM']): 
+def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all', attacks = ['PDG', 'FGSM']): 
     """
         This function classifies an image as clean or adversarial 
         based on the distance between the test image's attention map 
         and the mean attention maps of clean and adversarial images.
     """
-    # print(f'Testing against attacks: {attacks}')
-
     test_attn_flat = img_attn_map.flatten()
     mean_attns_cln_flat = mean_attn_clean.flatten()
-
     assert isinstance(mean_attn_adv, dict), "mean_attn_adv must be a dict"
-
-    # if isinstance(mean_attn_adv, dict):
-    # attacks = list(mean_attn_adv.keys())
-
-    # mean_attn_adv_flat = mean_attn_adv['PGD'].flatten()
-
-    # mean_attns_adv_flat = mean_attn_adv.flatten()
-
     if isinstance(method, str):
         method = [method]
-
     if "all" in method:
         method = ["sum", "euclidean", "cosine"]
-
     preds = {}
-
+    
+    # if "sum" in method:
+    #     sum_distance_to_normal = np.sum((test_attn_flat - mean_attns_cln_flat))
+    #     sum_pred = "Clean"
+    #     for key in attacks:
+    #         sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
+    #         if sum_distance_to_normal > sum_distance_to_adversarial:
+    #             sum_pred = "Adversarial"
+    #             break
+    #     preds["sum"] = sum_pred
+        
     if "sum" in method:
-        sum_distance_to_normal = np.sum((test_attn_flat - mean_attns_cln_flat))
-
-        sum_pred = "Clean"
-
+        structural_similarity_to_normal = ssim(test_attn_flat, mean_attns_cln_flat)
+        structural_pred = "Clean"
         for key in attacks:
-            sum_distance_to_adversarial = np.sum((test_attn_flat - mean_attn_adv[key].flatten()))
-            # if sum_distance_to_normal > sum_distance_to_adversarial:
-            if sum_distance_to_normal > sum_distance_to_adversarial:
-                sum_pred = "Adversarial"
+            structural_similarity_to_adversarial = ssim(test_attn_flat, mean_attn_adv[key].flatten())
+            if structural_similarity_to_normal < structural_similarity_to_adversarial:
+                structural_pred = "Adversarial"
                 break
-            # sum_pred = "Clean" if sum_distance_to_normal < sum_distance_to_adversarial else "Adversarial"
-
-        preds["sum"] = sum_pred
+        preds["sum"] = structural_pred
 
     if "euclidean" in method:
         euc_distance_to_normal = euclidean(test_attn_flat, mean_attns_cln_flat)
-
         euc_pred = "Clean"
         for key in attacks:
             euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attn_adv[key].flatten())
             if euc_distance_to_normal > euc_distance_to_adversarial:
                 euc_pred = "Adversarial"
                 break
-            print(f"For {key}: ", euc_pred)
-        # euc_distance_to_adversarial = euclidean(test_attn_flat, mean_attns_adv_flat)
-        # euc_pred = "Clean" if euc_distance_to_normal < euc_distance_to_adversarial else "Adversarial"
         preds["euclidean"] = euc_pred
-        print(f"Final: ", euc_pred)
 
     if "cosine" in method:
         cosine_distance_to_normal = cosine_similarity([test_attn_flat], [mean_attns_cln_flat])
@@ -192,38 +163,50 @@ def classify_image(img_attn_map, mean_attn_clean, mean_attn_adv, method = 'all',
             if cosine_distance_to_normal < cosine_distance_to_adversarial: # cosine similarity is between 0 and 1 and greater the value, more similar the vectors
                 cos_pred = "Adversarial"
                 break
-        # cosine_distance_to_adversarial = cosine_similarity([test_attn_flat], [mean_attns_adv_flat])
-        # cos_pred = "Clean" if cosine_distance_to_normal > cosine_distance_to_adversarial else "Adversarial"
         preds["cosine"] = cos_pred
 
     return preds
 
 
 if __name__ == "__main__":
+    
+    #NOTE: 1499 means the ref images generated on clean train data
+    #: 1500 means the ref images generated on train images (already PGD 0.03) that successfully fooled the model already
+    
+    MODEL_PATH = '/home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth'
+    DEVICE = 'cuda'
+    default_attack_type = 'PDG'
+    #Train data for TB class is at /home/raza.imam/Documents/HC701B/Project/data/TB_data/training
+    #Successful adversarial samples are saved at /l/users/raza.imam/successfull_adv/imgs/PDG/training
+    # train_path = "/home/raza.imam/Documents/HC701B/Project/data/TB_data/training"
+    train_path = '/home/raza.imam/Documents/XAIM/XAIM/data5/training'
+    test_path = "/home/raza.imam/Documents/XAIM/XAIM/data5/testing"
+    num_train_imgs = 20
+    num_test_imgs = 5
+    dataset_class = "Tuberculosis"
+    eps = 0.03
+    reference_attack = 'PDG'
+    
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_path', type=str, default='/home/raza.imam/Documents/HC701B/Project/models/vit_base_patch16_224_in21k_test-accuracy_0.96_chest.pth', help='model checkpoint path')
+    parser.add_argument('--model_path', type=str, default=MODEL_PATH)
     parser.add_argument('--device', type=str, default='cuda', help='device')
-    parser.add_argument('--attack', type=str, default='FGSM', choices=['FGSM', "PGD", "all"], help='attack type (all for all) to perform on test sample')
-    parser.add_argument('--train_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/training", help='path to train data')
-    parser.add_argument('--test_path', type=str, default="/home/raza.imam/Documents/HC701B/Project/data/TB_data/testing", help='path to test data')
+    parser.add_argument('--attack', type=str, default=default_attack_type, choices=['FGSM', "PDG", "all"], help='attack type (all for all) to perform on test sample')
+    parser.add_argument('--train_path', type=str, default=train_path, help='path to train data')
+    parser.add_argument('--test_path', type=str, default=test_path, help='path to test data')
     parser.add_argument("--num_train_imgs", type=int, default=2000, help="number of train images to use")
     parser.add_argument("--num_test_imgs", type=int, default=300, help="number of test images to use")
-    parser.add_argument("--dataset_class", type=str, default="Tuberculosis", choices=["Tuberculosis", "Normal"], help="dataset class")
+    parser.add_argument("--dataset_class", type=str, default="TB", choices=["Tuberculosis", "Normal", 'TB'], help="dataset class")
     parser.add_argument("--block", type=int, default=-1, help="ViT block to take attention from")
-    parser.add_argument("--eps", type=float, default=0.5, help="epsilon for adversarial attacks")
+    parser.add_argument("--eps", type=float, default=eps, help="epsilon for adversarial attacks")
     parser.add_argument("--force_recompute", action="store_true", help="force recompute mean images")
     parser.add_argument("--random", default=False, help="select random images for mean attn")
     parser.add_argument("--random_state", type=int, default=0, help="random state for experiments (train and test both)")
-    parser.add_argument("--reference_attack", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], help="attacks to test on")
-    # mean attacks
-    # parser.add_argument("--mean_attacks", type=str, default= 'all', choices=['PGD', 'FGSM', "all"], help="attacks to test on")
+    parser.add_argument("--reference_attack", type=str, default= reference_attack, choices=['PDG', 'FGSM', "all"], help="attacks to test on")
 
     args = parser.parse_args()
-
     print("Arguments:")
     for p in vars(args).items():
         print("  ", p[0]+": ", p[1])
-
 
     if args.attack == "all":
         args.attack = ATTACK_LIST # ["PGD", "FGSM"]
@@ -234,25 +217,16 @@ if __name__ == "__main__":
         args.reference_attack = ATTACK_LIST
     else:
         args.reference_attack = [args.reference_attack.upper()]
-
-    # if args.mean_attacks == "all":
-    #     args.mean_attacks = ATTACK_LIST
-    # else:
-    #     args.mean_attacks = [args.mean_attacks.upper()]
-
-
-    model = get_model(model_path=args.model_path, device=args.device)
     
-
     if args.force_recompute:
         exits = False
     else:
         # load mean/reference image if it exists
         exits = True
         for attack_name in args.reference_attack + ['clean']:
-            # mean_attns[attack_name] = mean_attns[attack_name].cpu().numpy()
             exits *= os.path.exists(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"))
-
+    
+    model = get_model(model_path=args.model_path, device=args.device)
     if exits:
         mean_attns = {}
         for attack_name in args.reference_attack + ['clean']:
@@ -274,9 +248,9 @@ if __name__ == "__main__":
         
         all_attns, mean_attns, mean_attn_diff = get_reference_attn_matp(
             model = model,
-            spilit_path = args.train_path,
+            split_path = args.train_path,
             class_name = args.dataset_class,
-            attack_type = args.reference_attack,
+            attack_type = args.reference_attack[0],
             eps = args.eps,
             
             image_folder = os.path.join(args.train_path, args.dataset_class),
@@ -291,9 +265,7 @@ if __name__ == "__main__":
     os.makedirs(os.path.join("./reference", "mean_images"), exist_ok=True)
     print(f'Saving mean images to ./reference/mean_images/')
     for attack_name in args.reference_attack + ['clean']:
-        # mean_attns[attack_name] = mean_attns[attack_name].cpu().numpy()
         np.save(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"), mean_attns[attack_name])
-
 
     # Get test images
     test_imgs, test_attns, test_attn_diff, test_img_files = get_images_attns(
@@ -309,29 +281,21 @@ if __name__ == "__main__":
         random_state = args.random_state,
     )
 
-    num_test_images = len(test_attns)
-    # test_attns = attns_pgd
-
     # classifications = []
     img_name = []
     gt_labels = []
-    sum_preds = []
+    sum_preds = [] #sum_preds = ssim preds
     euc_preds = []
     cos_preds = []
 
     # Test each test image
     for idx, attn_map in enumerate(test_attns):
-        # attn_map = attn_map['PGD']
-        # attn_map = attn_map['FGSM']
         for i, attack_name in enumerate(args.attack+['clean']):
-            # print(i, attack_name)
             result = classify_image(
                 img_attn_map = attn_map[attack_name],
                 mean_attn_clean = mean_attns['clean'], 
                 mean_attn_adv=mean_attns, 
-                attacks = args.reference_attack,
-                # attack_name = attack_name,
-                # mean_attn_adv = mean_attns['PGD'] #WHy PGD hard coded? NOt FGSM?
+                attacks = args.reference_attack
                 )
             sum_preds.append(result['sum'])
             euc_preds.append(result['euclidean'])
@@ -363,9 +327,8 @@ if __name__ == "__main__":
         print(f"F1 score for {method}: {f1_score(gt_labels_bin, pred_bin)}")
         print(f'-------------------------------------------------------------------')
         print(f'-------------------------------------------------------------------')
-    import datetime
-    ct = datetime.datetime.now()
 
+    ct = datetime.datetime.now()
 
     with open("./logs.txt", "a") as f:
         print('', file=f)
@@ -382,12 +345,5 @@ if __name__ == "__main__":
             print(f"F1 score for {method}: {f1_score(gt_labels_bin, pred_bin)}", file=f)
             print(f'Confusion matrix {method}: {confusion_matrix(gt_labels_bin, pred_bin)}', file=f)
             print(f'-------------------------------------------------------------------', file=f)
-
-            # # print to screen
-            # print(f'--------------- {method} ---------------')
-            # print(f"Accuracy for {method}: {accuracy_score(gt_labels_bin, pred_bin)}")
-            # print(f"F1 score for {method}: {f1_score(gt_labels_bin, pred_bin)}")
-            # print(f'-------------------------------------------------------------------')
-
         print(f'-------------------------------------------------------------------', file=f)
         print(f'', file=f)
