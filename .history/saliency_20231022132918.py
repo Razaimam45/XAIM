@@ -289,6 +289,7 @@ def load_mean_attns_N_images(
                 transforms.ToTensor(),
                 ]
             )
+    image_file_names = [f for f in os.listdir(image_folder, "Clean_x") if f.endswith(".jpg") or f.endswith(".png")]
     image_files = [f for f in os.listdir(os.path.join(image_folder, "Clean_x")) if f.endswith(".jpg") or f.endswith(".png")]    
     if n_random==False:
         image_files = image_files[:n_images]  #first N images
@@ -299,7 +300,7 @@ def load_mean_attns_N_images(
     #REVIEW:creating list of N clean images
     images = []
     for f in image_files:
-        image_path = os.path.join(image_folder, "Clean_x", f)
+        image_path = os.path.join(image_folder, f)
         image = Image.open(image_path)
         image = transform(image)
         # image = image.unsqueeze(0)        
@@ -321,21 +322,12 @@ def load_mean_attns_N_images(
         attack_type = [attack_type]
     print(device)
     if "PGD" in attack_type:         
-        adv_images_tensor_pdg = []
-        for f in image_files:
-            image_path_attck = os.path.join(image_folder, "Succ_x", f)
-            myimg = Image.open(image_path_attck)
-
-            image = transforms.ToTensor()(myimg) # TODO: check if this is correct
-            adv_images_tensor_pdg.append(myimg)
-        adv_images_tensor_pdg = torch.stack(adv_images_tensor_pdg)
-
-        # adv_images_tensor_pdg = apply_pdg(
-        #     model = model,
-        #     images = images_tensor,
-        #     device = device,
-        #     eps = eps,
-        # )
+        adv_images_tensor_pdg = apply_pdg(
+            model = model,
+            images = images_tensor,
+            device = device,
+            eps = eps,
+        )
 
         attentions_adv_pdg, mean_attns_pdg = apply_attn_on_images(model=model, block=block, images = adv_images_tensor_pdg, device=device)
         mean_attns_diff_pdg = mean_attns_pdg - mean_attns_cln
@@ -346,22 +338,12 @@ def load_mean_attns_N_images(
         mean_attn_diff['PGD'] = mean_attns_diff_pdg
         
     if "FGSM" in attack_type:
-        adv_images_tensor_fgsm = []
-        for f in image_files:
-            image_path_attck = os.path.join(image_folder, "Succ_x", f)
-            myimg = Image.open(image_path_attck)
-
-            image = transforms.ToTensor()(myimg) # TODO: check if this is correct
-            adv_images_tensor_fgsm.append(myimg)
-        adv_images_tensor_fgsm = torch.stack(adv_images_tensor_fgsm)
-
-        
-        # adv_images_tensor_fgsm = apply_fgsm(
-        #     model = model,
-        #     images = images_tensor,
-        #     device = device,
-        #     eps = eps,
-        # )
+        adv_images_tensor_fgsm = apply_fgsm(
+            model = model,
+            images = images_tensor,
+            device = device,
+            eps = eps,
+        )
         attentions_adv_fgsm, mean_attns_fgsm = apply_attn_on_images(model=model, block=block, images = adv_images_tensor_fgsm, device=device)
         # Calculating difference of mean_attns_cln and mean_attns_adv
         mean_attns_diff_fgsm = mean_attns_fgsm - mean_attns_cln

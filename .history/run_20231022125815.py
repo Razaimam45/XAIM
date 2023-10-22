@@ -58,19 +58,17 @@ def get_reference_attn_matp(
     # all_attns, mean_attns, mean_attn_diff = mean_attns_N_images(image_folder=image_folder, n_images=n_images, 
     #                                                                     block=block, model=model, n_random=select_random, device=device, attack_type=attack_type, eps = eps, random_state=random_state)
     print(f"Calculating mean of (first N images = {not select_random}) for reference")
-
-    image_folder = os.path.join(split_path, f'{attack_type}_{eps}', class_name, 'Succ') 
     all_attns, mean_attns, mean_attn_diff = load_mean_attns_N_images(
-                                                image_folder=image_folder, 
-                                                n_images=n_images,
-                                                block=block, 
-                                                model=model, 
-                                                n_random=select_random, 
-                                                device=device, 
-                                                attack_type=attack_type, 
-                                                eps = eps, 
-                                                random_state=random_state
-                                                )
+        image_folder=image_folder, 
+        n_images=n_images,
+        block=block, 
+        model=model, 
+        n_random=select_random, 
+        device=device, 
+        attack_type=attack_type, 
+        eps = eps, 
+        random_state=random_state
+        )
     
     for attack_name in attack_type:
         hist_plot(mean_attns['clean'], mean_attns[attack_name], n_images, no_show=True)

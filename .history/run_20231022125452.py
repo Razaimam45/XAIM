@@ -33,44 +33,12 @@ transform = transforms.Compose(
     ]
 )
 
-def get_reference_attn_matp(
-        model, 
-        image_folder, 
-        block=-1, 
-        n_images=2000, 
-        device="cuda", 
-        select_random=False, 
-        plot_path = "./plots/", 
-        split_path = None,
-        class_name = None,
-        # attack_type=["FGSM", "PGD"], 
-        attack_type="PGD", 
-        eps=0.03, 
-        random_state=0
-        ):
-    
-    if type(attack_type) != str:
-        raise ValueError("attack_type must be a string")
-        
+def get_reference_attn_matp(model, image_folder, block=-1, n_images=2000, device="cuda", attack_type=["FGSM", "PGD"], select_random=False, plot_path = "./plots/", eps=0.03, random_state=0):
     # print(f"On Block {block}")
     # all_attns, mean_attns, mean_attn_diff
-    # print(f"Calculating mean of (first N images = {not select_random}) for reference")
-    # all_attns, mean_attns, mean_attn_diff = mean_attns_N_images(image_folder=image_folder, n_images=n_images, 
-    #                                                                     block=block, model=model, n_random=select_random, device=device, attack_type=attack_type, eps = eps, random_state=random_state)
     print(f"Calculating mean of (first N images = {not select_random}) for reference")
-
-    image_folder = os.path.join(split_path, f'{attack_type}_{eps}', class_name, 'Succ') 
-    all_attns, mean_attns, mean_attn_diff = load_mean_attns_N_images(
-                                                image_folder=image_folder, 
-                                                n_images=n_images,
-                                                block=block, 
-                                                model=model, 
-                                                n_random=select_random, 
-                                                device=device, 
-                                                attack_type=attack_type, 
-                                                eps = eps, 
-                                                random_state=random_state
-                                                )
+    all_attns, mean_attns, mean_attn_diff = mean_attns_N_images(image_folder=image_folder, n_images=n_images, 
+                                                                        block=block, model=model, n_random=select_random, device=device, attack_type=attack_type, eps = eps, random_state=random_state)
     
     for attack_name in attack_type:
         hist_plot(mean_attns['clean'], mean_attns[attack_name], n_images, no_show=True)
@@ -259,26 +227,12 @@ if __name__ == "__main__":
             mean_attns[attack_name] = np.load(os.path.join("./reference", "mean_images", f"mean_attns_{attack_name}_block_{args.block}_images_{args.num_train_imgs}_eps_{args.eps}_dataset_{args.dataset_class}.npy"))
         print(f'Loaded mean images from ./reference/mean_images/')
     else:    
-
-        # all_attns, mean_attns, mean_attn_diff = get_reference_attn_matp(
-        #     model = model,
-        #     image_folder = os.path.join(args.train_path, args.dataset_class),
-        #     block = args.block,
-        #     n_images = args.num_train_imgs,
-        #     device = args.device,
-        #     attack_type = args.reference_attack,
-        #     select_random = args.random,
-        #     eps = args.eps,
-        #     random_state = args.random_state
-        # )
-        
         all_attns, mean_attns, mean_attn_diff = get_reference_attn_matp(
             model = model,
             spilit_path = args.train_path,
             class_name = args.dataset_class,
             attack_type = args.reference_attack,
             eps = args.eps,
-            
             image_folder = os.path.join(args.train_path, args.dataset_class),
             block = args.block,
             n_images = args.num_train_imgs,
@@ -286,7 +240,6 @@ if __name__ == "__main__":
             select_random = args.random,
             random_state = args.random_state
         )
-
     # save mean images to disk
     os.makedirs(os.path.join("./reference", "mean_images"), exist_ok=True)
     print(f'Saving mean images to ./reference/mean_images/')
