@@ -255,10 +255,9 @@ def get_blk_attn(input_img, blk, model, patch_size=16): #REVIEW:function to get 
 
     attentions = nn.functional.interpolate(attentions.unsqueeze(
             0), scale_factor=patch_size, mode="nearest")[0].cpu().numpy()
-    attentions = attentions.transpose(0,2,1)
+    # attentions = attentions.transpose(0,2,1)
     # print(attentions.shape) #REVIEW:list of attentions from each head, after interpolation. Shape = torch.Size([1, 12, 224, 224])
     mean_attention = np.mean(attentions, 0)
-
     return mean_attention #REVIEW:Return mean of 12 head attentions
 
 
@@ -300,8 +299,9 @@ def load_mean_attns_N_images(
     images = []
     for f in image_files:
         image_path = os.path.join(image_folder, "Clean_x", f)
-        image = Image.open(image_path)
-        image = transform(image)
+        image = Image.open(image_path).convert('RGB')
+        image = transforms.ToTensor()(image) # TODO: check if this is correct
+        # image = transform(image)
         # image = image.unsqueeze(0)        
         images.append(image)
     images_tensor = torch.stack(images)
@@ -315,18 +315,17 @@ def load_mean_attns_N_images(
     all_attns['clean'] = attentions_clean
 
 
-    if isinstance(attack_type, str):
-        # if attack_type=="all":
-        #     attack_type = ATTACK_LIST # ["PGD", "FGSM"]
-        attack_type = [attack_type]
-    print(device)
-    if "PGD" in attack_type:         
+    # if isinstance(attack_type, str):
+    #     # if attack_type=="all":
+    #     #     attack_type = ATTACK_LIST # ["PGD", "FGSM"]
+    #     attack_type = [attack_type]
+    if "PDG" in attack_type:         
         adv_images_tensor_pdg = []
         for f in image_files:
             image_path_attck = os.path.join(image_folder, "Succ_x", f)
-            myimg = Image.open(image_path_attck)
+            myimg = Image.open(image_path_attck).convert('RGB')
 
-            image = transforms.ToTensor()(myimg) # TODO: check if this is correct
+            myimg = transforms.ToTensor()(myimg) # TODO: check if this is correct
             adv_images_tensor_pdg.append(myimg)
         adv_images_tensor_pdg = torch.stack(adv_images_tensor_pdg)
 
@@ -341,17 +340,17 @@ def load_mean_attns_N_images(
         mean_attns_diff_pdg = mean_attns_pdg - mean_attns_cln
 
         # add to dict
-        mean_attns['PGD'] = mean_attns_pdg
-        all_attns['PGD'] = attentions_adv_pdg
-        mean_attn_diff['PGD'] = mean_attns_diff_pdg
+        mean_attns['PDG'] = mean_attns_pdg
+        all_attns['PDG'] = attentions_adv_pdg
+        mean_attn_diff['PDG'] = mean_attns_diff_pdg
         
     if "FGSM" in attack_type:
         adv_images_tensor_fgsm = []
         for f in image_files:
             image_path_attck = os.path.join(image_folder, "Succ_x", f)
-            myimg = Image.open(image_path_attck)
+            myimg = Image.open(image_path_attck).convert('RGB')
 
-            image = transforms.ToTensor()(myimg) # TODO: check if this is correct
+            myimg = transforms.ToTensor()(myimg) # TODO: check if this is correct
             adv_images_tensor_fgsm.append(myimg)
         adv_images_tensor_fgsm = torch.stack(adv_images_tensor_fgsm)
 
@@ -396,7 +395,7 @@ def mean_attns_N_images(
             [
                 transforms.Grayscale(num_output_channels=3),
                 transforms.RandomRotation((90,90)),
-                transforms.CenterCrop(400),
+                transforms.CenterCrop(200),
                 transforms.Resize((224, 224)),
                 # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
                 transforms.ToTensor(),
@@ -473,7 +472,7 @@ def mean_attns_N_images(
 # import foolbox as fb
 def apply_pdg(model, images, device="cuda", eps=0.03, radius = 0.13, step_num=40, target=0, pgd = None, attack_lib='Foolbox'):
     # if pgd is None:
-    #     pgd = PGD(model, lower_bound=0, upper_bound=1)
+    #     pgd = PGD(model, lower_bound=, upper_bound=1)
     print(attack_lib)
     pgd = PGD(model, lower_bound=0, upper_bound=1)
     f_model = fb.PyTorchModel(model, bounds=(0,1), device='cuda') #Foolbox's PGD
@@ -569,4 +568,5 @@ def test_img_attn(image_folder, block, img_name, model, plot=False, device="cuda
             plt.savefig(os.path.join("plots", 'test_stats', f"attns_{attack_name}_block_{block}_images_{1}.png"))            
     
     return img, attns, attn_diff
+
 
