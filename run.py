@@ -26,7 +26,7 @@ transform = transforms.Compose(
     [
         transforms.Grayscale(num_output_channels=3),
         # transforms.RandomRotation((90,90)),
-        transforms.CenterCrop(400),
+        # transforms.CenterCrop(400),
         transforms.Resize((224, 224)),
         # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
         transforms.ToTensor(),
